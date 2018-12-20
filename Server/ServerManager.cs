@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Net;
 using System.Diagnostics;
 
-namespace SCJoyServer
+using SCJoyServer.VJoy;
+using System.Net.NetworkInformation;
+
+namespace SCJoyServer.Server
 {
 
   /// <summary>
@@ -17,13 +17,36 @@ namespace SCJoyServer
 
     #region Static IP Utilities
 
-    
-    static public String GetLocalIP( )
+    /// <summary>
+    /// Try to get the best IP address for this machine...
+    /// ignores virtual and loopback adapters 
+    /// </summary>
+    /// <returns></returns>
+    static public string GetLocalIP()
     {
-      IPHostEntry host;
-      String localIP = "";
+      string localIP = "";
 
-      host = Dns.GetHostEntry( Dns.GetHostName( ) );
+      foreach ( NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces( ) ) {
+        if ( nic.OperationalStatus == OperationalStatus.Up ) {
+          // must be up..
+          if ( nic.Description.ToLowerInvariant( ).Contains( "virtual" ) ) continue; // not with virtual interfaces
+          if ( nic.NetworkInterfaceType == NetworkInterfaceType.Loopback ) continue;
+          
+          IPInterfaceProperties ipProps = nic.GetIPProperties( );
+          foreach ( var ips in ipProps.UnicastAddresses ) {
+            if ( ips.Address.AddressFamily.ToString( ) == "InterNetwork" ) {
+              // that would be a IpV4 address..
+              localIP = ips.Address.ToString( );
+              return localIP;
+            }
+          }
+        }
+        // check if localAddr is in ipProps.UnicastAddresses
+      }
+      return localIP;
+
+      /*
+      IPHostEntry host = Dns.GetHostEntry( Dns.GetHostName( ) );
       foreach ( IPAddress ip in host.AddressList ) {
         if ( ip.AddressFamily.ToString( ) == "InterNetwork" ) {
           // just catch the first for now - have to see how to do it better...
@@ -32,6 +55,7 @@ namespace SCJoyServer
         }
       }
       return localIP;
+      */
     }//GetLocalIP
 
 
@@ -40,17 +64,16 @@ namespace SCJoyServer
     /// </summary>
     /// <param name="ipAddr">THe IP address string</param>
     /// <returns>True if it can be used</returns>
-    static public Boolean CheckIP( String ipAddr )
+    static public bool CheckIP( string ipAddr )
     {
-      if ( !String.IsNullOrEmpty( ipAddr ) ) {
-        IPAddress lAddr;
-        if ( IPAddress.TryParse( ipAddr, out lAddr ) ) {
+      if ( !string.IsNullOrEmpty( ipAddr ) ) {
+        if ( IPAddress.TryParse( ipAddr, out IPAddress lAddr ) ) {
           // seems to be a valid IP
-          if ( IPAddress.Equals(lAddr, IPAddress.Loopback) ) return true;
+          if ( Equals( lAddr, IPAddress.Loopback ) ) return true;
           // check if we own such an IP
           IPHostEntry host = Dns.GetHostEntry( Dns.GetHostName( ) );
           foreach ( IPAddress ip in host.AddressList ) {
-            if ( IPAddress.Equals(lAddr,ip) ) return true;
+            if ( Equals( lAddr, ip ) ) return true;
           }
         }
       }
@@ -62,36 +85,37 @@ namespace SCJoyServer
 
 
 
-    
+
     #region ServerManager
 
-    private IPAddress               m_localAddr  = IPAddress.Loopback;
-    private ClientDispatcher        m_vjDispatcher = null;    // instance of the dispatcher
+    private IPAddress m_localAddr = IPAddress.Loopback;
+    private TcpClientDispatcher m_vjDispatcherTcp = null;    // instance of the dispatcher
+    private UdpClientDispatcher m_vjDispatcherUdp = null;    // instance of the dispatcher
 
-    private Boolean                 m_running = false;
-    public Boolean Running { get { return m_running; } }
+    public bool UdpRunning { get; private set; } = false;
+    public bool TcpRunning { get; private set; } = false;
 
     /// <summary>
-    /// Starts the Service
+    /// Starts the UDP Service
     /// </summary>
     /// <param name="sIpAddress">The local IP to bind to</param>
     /// <param name="port">The local port to bind to</param>
     /// <param name="setupFilePath">A setupfile (not yet used)</param>
-    public void StartServer( String sIpAddress, int port, int jsIndex, String setupFilePath )
+    public void StartUdpServer( string sIpAddress, int port, int jsIndex, string setupFilePath )
     {
-      if ( m_vjDispatcher != null ) if ( m_vjDispatcher.IsAlive ) return; // already running
+      if ( m_vjDispatcherUdp != null ) if ( m_vjDispatcherUdp.IsAlive ) return; // already running
 
       // Start the client interface
       IPAddress lAddr = m_localAddr;
       // see if we have a valid IP, else use loopback
-      if ( !String.IsNullOrEmpty( sIpAddress ) ) {
+      if ( !string.IsNullOrEmpty( sIpAddress ) ) {
         if ( !IPAddress.TryParse( sIpAddress, out lAddr ) ) {
           lAddr = m_localAddr; // use loopback
         }
       }
 
       // First try to connect the Joystick interface
-      if ( ( jsIndex < 0 ) || ( jsIndex > 1 ) ) throw new IndexOutOfRangeException( );
+      if ( ( jsIndex < 1 ) || ( jsIndex > 16 ) ) throw new IndexOutOfRangeException( );
       if ( !VJoyHandler.Instance.Connect( jsIndex ) ) {
         VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Error );
         Debug.Print( "\nERROR - cannot start the Joystick Handler ..." );
@@ -99,9 +123,48 @@ namespace SCJoyServer
       }
 
       // load and run the dispatcher
-      m_vjDispatcher = new ClientDispatcher( lAddr, port );
-      if ( m_vjDispatcher.IsAlive ) {
-        m_running = true;
+      m_vjDispatcherUdp = new UdpClientDispatcher( lAddr, port );
+      if ( m_vjDispatcherUdp.IsAlive ) {
+        UdpRunning = true;
+        VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Running ); // maintain status information 
+      }
+      else {
+        VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Error ); // maintain status information 
+      }
+    }
+
+
+    /// <summary>
+    /// Starts the TCP Service
+    /// </summary>
+    /// <param name="sIpAddress">The local IP to bind to</param>
+    /// <param name="port">The local port to bind to</param>
+    /// <param name="setupFilePath">A setupfile (not yet used)</param>
+    public void StartTcpServer( string sIpAddress, int port, int jsIndex, string setupFilePath )
+    {
+      if ( m_vjDispatcherTcp != null ) if ( m_vjDispatcherTcp.IsAlive ) return; // already running
+
+      // Start the client interface
+      IPAddress lAddr = m_localAddr;
+      // see if we have a valid IP, else use loopback
+      if ( !string.IsNullOrEmpty( sIpAddress ) ) {
+        if ( !IPAddress.TryParse( sIpAddress, out lAddr ) ) {
+          lAddr = m_localAddr; // use loopback
+        }
+      }
+
+      // First try to connect the Joystick interface
+      if ( ( jsIndex < 1 ) || ( jsIndex > 16 ) ) throw new IndexOutOfRangeException( );
+      if ( !VJoyHandler.Instance.Connect( jsIndex ) ) {
+        VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Error );
+        Debug.Print( "\nERROR - cannot start the Joystick Handler ..." );
+        return; // ERROR - cannot connect
+      }
+
+      // load and run the dispatcher
+      m_vjDispatcherTcp = new TcpClientDispatcher( lAddr, port );
+      if ( m_vjDispatcherTcp.IsAlive ) {
+        TcpRunning = true;
         VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Running ); // maintain status information 
       }
       else {
@@ -113,15 +176,20 @@ namespace SCJoyServer
     /// <summary>
     /// Stops the Service and its threads
     /// </summary>
-    public void StopServer( )
+    public void StopServer()
     {
-      m_running = false;
+      UdpRunning = false;
+      TcpRunning = false;
       VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Shutdown ); // maintain status information 
 
       // take down dispatcher
-      if ( m_vjDispatcher != null ) {
-        m_vjDispatcher.Abort( );  // will only return after Joining the threads
-        m_vjDispatcher = null;
+      if ( m_vjDispatcherTcp != null ) {
+        m_vjDispatcherTcp.Abort( );  // will only return after Joining the threads
+        m_vjDispatcherTcp = null;
+      }
+      if ( m_vjDispatcherUdp != null ) {
+        m_vjDispatcherUdp.Abort( );  // will only return after Joining the threads
+        m_vjDispatcherUdp = null;
       }
       // should return once the dispatcher and it's threads are down.
 

@@ -1,9 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace SCJoyServer
+using static SCJoyServer.DxKbd.SCdxKeyboard;
+using static vJoyInterfaceWrap.vJoyData;
+using vJoyInterfaceWrap;
+using SCJoyServer.Server;
+
+namespace SCJoyServer.VJoy
 {
   /// <summary>
   /// Singleton that interacts with the VJoy DLL
@@ -11,33 +13,48 @@ namespace SCJoyServer
   /// </summary>
   sealed class VJoyHandler
   {
-    private static readonly VJoyHandler instance = new VJoyHandler( );
-    private VJoyHandler( ) { }
+    private VJoyHandler() { }
 
-    public static VJoyHandler Instance
-    {
-      get
-      {
-        return instance;
-      }
-    }
+    public static VJoyHandler Instance { get; } = new VJoyHandler( );
 
 
-    private VJoyDLL.vJoystick m_joystick;
+    private vJoy m_joystick;  // the vJoy device
+    private vJoystick m_vJoystick; // my virtual JS
+    private uint m_jsId = 0; // invalid
 
-    private Boolean m_connected = false;
-    public Boolean Connected { get { return m_connected; } }
+    public bool Connected { get; private set; } = false;
 
-    public Boolean Connect( int n )
+    public bool Connect( int n )
     {
       if ( Connected ) return true; // already connected
-
       try {
-        m_joystick = VJoyDLL.Instance.Joystick( n );
-        m_connected = ( m_joystick != null );
+        if ( n <= 0 || n > 16 ) return false; // ERROR exit
+        m_jsId = (uint)n;
+        m_joystick = new vJoy( );
+        if ( !m_joystick.vJoyEnabled( ) ) {
+          Disconnect( ); // cleanup
+          return false; // ERROR exit
+        }
+
+        // try to control..
+        Connected = m_joystick.isVJDExists( m_jsId ); // exists?
+        if ( Connected ) {
+          Connected = m_joystick.AcquireVJD( m_jsId ); // to use?
+        }
+        if ( Connected ) {
+          bool r = m_joystick.ResetVJD( m_jsId );
+          m_vJoystick = new vJoystick( m_joystick, m_jsId ); // the one to use..
+        }
+        else {
+          m_jsId = 0;
+          m_joystick = null;
+          return false; // ERROR exit
+        }
       }
-      catch ( IndexOutOfRangeException ) {
-        // wrong index 
+      catch {
+        // wrong ...
+        m_jsId = 0;
+        m_joystick = null;
       }
 
       return Connected;
@@ -48,26 +65,49 @@ namespace SCJoyServer
     /// 
     /// Disconnect the Joystick system
     /// </summary>
-    public void Disconnect( )
+    public void Disconnect()
     {
       if ( Connected ) {
-        VJoyDLL.Instance.DropJoystick( ref m_joystick );
+        m_joystick.ResetVJD( m_jsId );
+        m_joystick.RelinquishVJD( m_jsId );
       }
-      m_connected = false;
-      VJoyDLL.Instance.Shutdown( );
+      Connected = false;
+      m_jsId = 0;
+      m_joystick = null;
     }
 
+    private void Modifier( VJoyCommand.VJ_Modifier modifier, bool press )
+    {
+      if ( modifier == VJoyCommand.VJ_Modifier.VJ_None ) return;
+      int mod = 0;
+      if ( modifier == VJoyCommand.VJ_Modifier.VJ_LCtrl )
+        mod = DxKbd.SCdxKeycodes.VK_LCONTROL;
+      else if ( modifier == VJoyCommand.VJ_Modifier.VJ_RCtrl )
+        mod = DxKbd.SCdxKeycodes.VK_RCONTROL;
+      else if ( modifier == VJoyCommand.VJ_Modifier.VJ_LAlt )
+        mod = DxKbd.SCdxKeycodes.VK_LALT;
+      else if ( modifier == VJoyCommand.VJ_Modifier.VJ_RAlt )
+        mod = DxKbd.SCdxKeycodes.VK_RALT;
+
+      if ( press ) {
+        KeyDown( mod );
+      }
+      else {
+        // release
+        KeyUp( mod );
+      }
+    }
 
     /// <summary>
     /// Dispatch the command message 
     /// </summary>
     /// <param name="message">A VJoy Message</param>
-    public Boolean HandleMessage( VJoyCommand.VJCommand message )
+    public bool HandleMessage( VJoyCommand.VJCommand message )
     {
       if ( !Connected ) return false; // ERROR - bail out for unde messages
       if ( !message.IsValid ) return false; // ERROR - bail out for unde messages
 
-      Boolean retVal = false;
+      bool retVal = false;
 
       // mutual exclusive access to the device
       lock ( m_joystick ) {
@@ -77,13 +117,13 @@ namespace SCJoyServer
             case VJoyCommand.VJ_ControllerType.VJ_Axis:
               switch ( message.CtrlDirection ) {
                 case VJoyCommand.VJ_ControllerDirection.VJ_X:
-                  m_joystick.XAxis = message.CtrlValue;
+                  m_vJoystick.XAxis = message.CtrlValue;
                   break;
                 case VJoyCommand.VJ_ControllerDirection.VJ_Y:
-                  m_joystick.YAxis = message.CtrlValue;
+                  m_vJoystick.YAxis = message.CtrlValue;
                   break;
                 case VJoyCommand.VJ_ControllerDirection.VJ_Z:
-                  m_joystick.ZAxis = message.CtrlValue;
+                  m_vJoystick.ZAxis = message.CtrlValue;
                   break;
                 default:
                   break;
@@ -93,13 +133,13 @@ namespace SCJoyServer
             case VJoyCommand.VJ_ControllerType.VJ_RotAxis:
               switch ( message.CtrlDirection ) {
                 case VJoyCommand.VJ_ControllerDirection.VJ_X:
-                  m_joystick.XRotAxis = message.CtrlValue;
+                  m_vJoystick.XRotAxis = message.CtrlValue;
                   break;
                 case VJoyCommand.VJ_ControllerDirection.VJ_Y:
-                  m_joystick.YRotAxis = message.CtrlValue;
+                  m_vJoystick.YRotAxis = message.CtrlValue;
                   break;
                 case VJoyCommand.VJ_ControllerDirection.VJ_Z:
-                  m_joystick.ZRotAxis = message.CtrlValue;
+                  m_vJoystick.ZRotAxis = message.CtrlValue;
                   break;
                 default:
                   break;
@@ -109,10 +149,10 @@ namespace SCJoyServer
             case VJoyCommand.VJ_ControllerType.VJ_Slider:
               switch ( message.CtrlIndex ) {
                 case 1:
-                  m_joystick.Slider1 = message.CtrlValue;
+                  m_vJoystick.Slider1 = message.CtrlValue;
                   break;
                 case 2:
-                  m_joystick.Slider2 = message.CtrlValue;
+                  m_vJoystick.Slider2 = message.CtrlValue;
                   break;
                 default:
                   break;
@@ -122,19 +162,19 @@ namespace SCJoyServer
             case VJoyCommand.VJ_ControllerType.VJ_Hat:
               switch ( message.CtrlDirection ) {
                 case VJoyCommand.VJ_ControllerDirection.VJ_Center:
-                  m_joystick.SetPOV( message.CtrlIndex - 1, VJoyDLL.POVType.Nil );
+                  m_vJoystick.SetPOV( message.CtrlIndex, vJoystick.POVType.Nil );
                   break;
                 case VJoyCommand.VJ_ControllerDirection.VJ_Left:
-                  m_joystick.SetPOV( message.CtrlIndex - 1, VJoyDLL.POVType.Left );
+                  m_vJoystick.SetPOV( message.CtrlIndex, vJoystick.POVType.Left );
                   break;
                 case VJoyCommand.VJ_ControllerDirection.VJ_Right:
-                  m_joystick.SetPOV( message.CtrlIndex - 1, VJoyDLL.POVType.Right );
+                  m_vJoystick.SetPOV( message.CtrlIndex, vJoystick.POVType.Right );
                   break;
                 case VJoyCommand.VJ_ControllerDirection.VJ_Up:
-                  m_joystick.SetPOV( message.CtrlIndex - 1, VJoyDLL.POVType.Up );
+                  m_vJoystick.SetPOV( message.CtrlIndex, vJoystick.POVType.Up );
                   break;
                 case VJoyCommand.VJ_ControllerDirection.VJ_Down:
-                  m_joystick.SetPOV( message.CtrlIndex - 1, VJoyDLL.POVType.Down );
+                  m_vJoystick.SetPOV( message.CtrlIndex, vJoystick.POVType.Down );
                   break;
                 default:
                   break;
@@ -144,28 +184,73 @@ namespace SCJoyServer
             case VJoyCommand.VJ_ControllerType.VJ_Button:
               switch ( message.CtrlDirection ) {
                 case VJoyCommand.VJ_ControllerDirection.VJ_Down:
-                  m_joystick.SetButton( message.CtrlIndex - 1, true );
+                  m_vJoystick.SetButton( message.CtrlIndex, true );
                   break;
                 case VJoyCommand.VJ_ControllerDirection.VJ_Up:
-                  m_joystick.SetButton( message.CtrlIndex - 1, false );
+                  m_vJoystick.SetButton( message.CtrlIndex, false );
+                  break;
+                case VJoyCommand.VJ_ControllerDirection.VJ_Tap:
+                  m_vJoystick.SetButton( message.CtrlIndex, true );
+                  Sleep_ms( (uint)message.CtrlValue );
+                  m_vJoystick.SetButton( message.CtrlIndex, false );
+                  break;
+                case VJoyCommand.VJ_ControllerDirection.VJ_DoubleTap:
+                  m_vJoystick.SetButton( message.CtrlIndex, true );
+                  Sleep_ms( (uint)message.CtrlValue ); // tap delay
+                  m_vJoystick.SetButton( message.CtrlIndex, false );
+                  Sleep_ms( 25 ); // double tap delay is fixed
+                  m_vJoystick.SetButton( message.CtrlIndex, true );
+                  Sleep_ms( (uint)message.CtrlValue ); // tap delay
+                  m_vJoystick.SetButton( message.CtrlIndex, false );
                   break;
                 default:
                   break;
               }
               break;
+
+            case VJoyCommand.VJ_ControllerType.DX_Key:
+              switch ( message.CtrlDirection ) {
+                case VJoyCommand.VJ_ControllerDirection.VJ_Down:
+                  Modifier( message.CtrlModifier, true );
+                  KeyDown( message.CtrlIndex );
+                  break;
+                case VJoyCommand.VJ_ControllerDirection.VJ_Up:
+                  KeyUp( message.CtrlIndex );
+                  Modifier( message.CtrlModifier, false );
+                  break;
+                case VJoyCommand.VJ_ControllerDirection.VJ_Tap:
+                  Modifier( message.CtrlModifier, true );
+                  KeyStroke( message.CtrlIndex, (uint)message.CtrlValue );
+                  Modifier( message.CtrlModifier, false );
+                  break;
+                case VJoyCommand.VJ_ControllerDirection.VJ_DoubleTap:
+                  Modifier( message.CtrlModifier, true );
+                  KeyStroke( message.CtrlIndex, (uint)message.CtrlValue );
+                  Modifier( message.CtrlModifier, false );
+                  Sleep_ms( 25 ); // double tap delay is fixed
+                  Modifier( message.CtrlModifier, true );
+                  KeyStroke( message.CtrlIndex, (uint)message.CtrlValue );
+                  Modifier( message.CtrlModifier, false );
+                  break;
+                default:
+                  break;
+              }
+              break;
+
             default:
               break;
           }//switch message type
 
-          m_joystick.Update( );
-
           retVal = true; // finally we made it
         }
         catch { // anything
-          m_connected = false; // probably something went wrong...
+          Connected = false; // probably something went wrong...
         }
 
       }//endlock
+
+      if ( retVal )
+        VJoyServerStatus.Instance.SetClientsPing( ); // just issued a joystick command
 
       return retVal;
     }

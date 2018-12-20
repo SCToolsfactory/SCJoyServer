@@ -1,29 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SCJoyServer
+﻿namespace SCJoyServer.Server
 {
   /// <summary>
   /// Maintain the VJoy Server(s) Status - provide events to subscribe
   /// </summary>
   class VJoyServerStatus
   {
-
-    // Singleton
-    private static readonly VJoyServerStatus instance = new VJoyServerStatus( );
     private VJoyServerStatus( )
     {
     }
 
-    public static VJoyServerStatus Instance
-    {
-      get
-      {
-        return instance;
-      }
-    }
+    public static VJoyServerStatus Instance { get; } = new VJoyServerStatus( );
 
     DebugForm DBF = null; 
 
@@ -48,7 +34,7 @@ namespace SCJoyServer
     public class SvrStatusEventArgs
     {
       public SvrStatusEventArgs( string s ) { Text = s; }
-      public String Text { get; private set; } // readonly
+      public string Text { get; private set; } // readonly
 
     }
 
@@ -60,11 +46,10 @@ namespace SCJoyServer
 
     // Wrap the event in a protected virtual method
     // to enable derived classes to raise the event.
-    protected virtual void RaiseSvrStatusEvent( String s )
+    protected virtual void RaiseSvrStatusEvent( string s )
     {
       // Raise the event by using the () operator.
-      if ( SvrStatusEvent != null )
-        SvrStatusEvent( this, new SvrStatusEventArgs( s ) );
+      SvrStatusEvent?.Invoke( this, new SvrStatusEventArgs( s ) );
     }
 
     #endregion
@@ -75,7 +60,7 @@ namespace SCJoyServer
     public class ClientsStatusEventArgs
     {
       public ClientsStatusEventArgs( string s ) { Text = s; }
-      public String Text { get; private set; } // readonly
+      public string Text { get; private set; } // readonly
 
     }
 
@@ -87,11 +72,29 @@ namespace SCJoyServer
 
     // Wrap the event in a protected virtual method
     // to enable derived classes to raise the event.
-    protected virtual void RaiseClientsStatusEvent( String s )
+    protected virtual void RaiseClientsStatusEvent( string s )
     {
       // Raise the event by using the () operator.
-      if ( ClientsStatusEvent != null )
-        ClientsStatusEvent( this, new ClientsStatusEventArgs( s ) );
+      ClientsStatusEvent?.Invoke( this, new ClientsStatusEventArgs( s ) );
+    }
+
+    #endregion
+
+
+    #region ClientsPing Event
+
+    // Declare the delegate (if using non-generic pattern).
+    public delegate void ClientsPingEventHandler( object sender );
+
+    // Declare the event.
+    public event ClientsPingEventHandler ClientsPingEvent;
+
+    // Wrap the event in a protected virtual method
+    // to enable derived classes to raise the event.
+    protected virtual void RaiseClientsPingEvent( )
+    {
+      // Raise the event by using the () operator.
+      ClientsPingEvent?.Invoke( this );
     }
 
     #endregion
@@ -102,7 +105,7 @@ namespace SCJoyServer
     public class ClientsDebugEventArgs
     {
       public ClientsDebugEventArgs( string s ) { Text = s; }
-      public String Text { get; private set; } // readonly
+      public string Text { get; private set; } // readonly
 
     }
 
@@ -114,11 +117,10 @@ namespace SCJoyServer
 
     // Wrap the event in a protected virtual method
     // to enable derived classes to raise the event.
-    protected virtual void RaiseClientsDebugEvent( String s )
+    protected virtual void RaiseClientsDebugEvent( string s )
     {
       // Raise the event by using the () operator.
-      if ( ClientsDebugEvent != null )
-        ClientsDebugEvent( this, new ClientsDebugEventArgs( s ) );
+      ClientsDebugEvent?.Invoke( this, new ClientsDebugEventArgs( s ) );
     }
 
     #endregion
@@ -139,12 +141,17 @@ namespace SCJoyServer
       RaiseSvrStatusEvent( m_svrStatus.ToString( ) );
     }
 
-    public void SetClientsStatus( String msg )
+    public void SetClientsStatus( string msg )
     {
       RaiseClientsStatusEvent( msg );
     }
 
-    public void Debug( String msg )
+    public void SetClientsPing( )
+    {
+      RaiseClientsPingEvent( );
+    }
+
+    public void Debug( string msg )
     {
       RaiseClientsDebugEvent( msg );
     }

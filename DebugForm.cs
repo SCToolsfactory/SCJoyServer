@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using SCJoyServer.Server;
+
 namespace SCJoyServer
 {
   public partial class DebugForm : Form
