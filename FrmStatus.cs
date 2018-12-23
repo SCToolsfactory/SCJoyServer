@@ -113,10 +113,13 @@ namespace SCJoyServer
         }
         lbxClients.Items.Clear( );
         int jsIndex = 0;
-        string[] js = ( cbxJoystick.SelectedItem as string ).Split( new char[] { '#' } );
-        if (js.Length>1) {
-          jsIndex = int.Parse(js[1]);
+        if ( cbxJoystick.Items.Count > 0 ) {
+          string[] js = ( cbxJoystick.SelectedItem as string ).Split( new char[] { '#' } );
+          if ( js.Length > 1 ) {
+            jsIndex = int.Parse( js[1] );
+          }
         }
+
         if ( cbxUdp.Checked ) {
           SVR.StartUdpServer( txLocIP.Text, port, jsIndex, "" );
         }

@@ -31,7 +31,7 @@ namespace SCJoyServer.Server
           // must be up..
           if ( nic.Description.ToLowerInvariant( ).Contains( "virtual" ) ) continue; // not with virtual interfaces
           if ( nic.NetworkInterfaceType == NetworkInterfaceType.Loopback ) continue;
-          
+
           IPInterfaceProperties ipProps = nic.GetIPProperties( );
           foreach ( var ips in ipProps.UnicastAddresses ) {
             if ( ips.Address.AddressFamily.ToString( ) == "InterNetwork" ) {
@@ -115,11 +115,16 @@ namespace SCJoyServer.Server
       }
 
       // First try to connect the Joystick interface
-      if ( ( jsIndex < 1 ) || ( jsIndex > 16 ) ) throw new IndexOutOfRangeException( );
-      if ( !VJoyHandler.Instance.Connect( jsIndex ) ) {
-        VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Error );
-        Debug.Print( "\nERROR - cannot start the Joystick Handler ..." );
-        return; // ERROR - cannot connect
+      if ( ( jsIndex < 1 ) || ( jsIndex > 16 ) ) {
+        // valid case if the library is not loaded - no valid joystick index selected
+        Debug.Print( "\nno valid Joystick index supplied - will not use vJoy" );
+      }
+      else {
+        if ( !VJoyHandler.Instance.Connect( jsIndex ) ) {
+          VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Error );
+          Debug.Print( "\nERROR - cannot start the Joystick Handler ..." );
+          return; // ERROR - cannot connect
+        }
       }
 
       // load and run the dispatcher
@@ -154,11 +159,16 @@ namespace SCJoyServer.Server
       }
 
       // First try to connect the Joystick interface
-      if ( ( jsIndex < 1 ) || ( jsIndex > 16 ) ) throw new IndexOutOfRangeException( );
-      if ( !VJoyHandler.Instance.Connect( jsIndex ) ) {
-        VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Error );
-        Debug.Print( "\nERROR - cannot start the Joystick Handler ..." );
-        return; // ERROR - cannot connect
+      if ( ( jsIndex < 1 ) || ( jsIndex > 16 ) ) {
+        // valid case if the library is not loaded - no valid joystick index selected
+        Debug.Print( "\nno valid Joystick index supplied - will not use vJoy" );
+      }
+      else {
+        if ( !VJoyHandler.Instance.Connect( jsIndex ) ) {
+          VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Error );
+          Debug.Print( "\nERROR - cannot start the Joystick Handler ..." );
+          return; // ERROR - cannot connect
+        }
       }
 
       // load and run the dispatcher

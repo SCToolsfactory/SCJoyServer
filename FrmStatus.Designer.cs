@@ -33,6 +33,7 @@
       this.txPort = new System.Windows.Forms.TextBox();
       this.label1 = new System.Windows.Forms.Label();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.cbxJoystick = new System.Windows.Forms.ComboBox();
       this.lblSignal = new System.Windows.Forms.Label();
       this.cbxTcp = new System.Windows.Forms.CheckBox();
       this.cbxUdp = new System.Windows.Forms.CheckBox();
@@ -50,11 +51,10 @@
       this.IL = new System.Windows.Forms.ImageList(this.components);
       this.ICON = new System.Windows.Forms.NotifyIcon(this.components);
       this.groupBox3 = new System.Windows.Forms.GroupBox();
-      this.label4 = new System.Windows.Forms.Label();
-      this.label5 = new System.Windows.Forms.Label();
-      this.lblVJoy = new System.Windows.Forms.Label();
       this.lblSCdx = new System.Windows.Forms.Label();
-      this.cbxJoystick = new System.Windows.Forms.ComboBox();
+      this.lblVJoy = new System.Windows.Forms.Label();
+      this.label5 = new System.Windows.Forms.Label();
+      this.label4 = new System.Windows.Forms.Label();
       this.groupBox1.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.groupBox3.SuspendLayout();
@@ -111,6 +111,14 @@
       this.groupBox1.TabIndex = 4;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Server";
+      // 
+      // cbxJoystick
+      // 
+      this.cbxJoystick.FormattingEnabled = true;
+      this.cbxJoystick.Location = new System.Drawing.Point(161, 100);
+      this.cbxJoystick.Name = "cbxJoystick";
+      this.cbxJoystick.Size = new System.Drawing.Size(104, 21);
+      this.cbxJoystick.TabIndex = 12;
       // 
       // lblSignal
       // 
@@ -270,23 +278,14 @@
       this.groupBox3.TabStop = false;
       this.groupBox3.Text = "Device Support";
       // 
-      // label4
+      // lblSCdx
       // 
-      this.label4.AutoSize = true;
-      this.label4.Location = new System.Drawing.Point(6, 25);
-      this.label4.Name = "label4";
-      this.label4.Size = new System.Drawing.Size(79, 13);
-      this.label4.TabIndex = 4;
-      this.label4.Text = "vJoy - Joystick:";
-      // 
-      // label5
-      // 
-      this.label5.AutoSize = true;
-      this.label5.Location = new System.Drawing.Point(6, 47);
-      this.label5.Name = "label5";
-      this.label5.Size = new System.Drawing.Size(89, 13);
-      this.label5.TabIndex = 4;
-      this.label5.Text = "SCdx - Keyboard:";
+      this.lblSCdx.AutoSize = true;
+      this.lblSCdx.Location = new System.Drawing.Point(101, 47);
+      this.lblSCdx.Name = "lblSCdx";
+      this.lblSCdx.Size = new System.Drawing.Size(16, 13);
+      this.lblSCdx.TabIndex = 6;
+      this.lblSCdx.Text = "...";
       // 
       // lblVJoy
       // 
@@ -297,22 +296,23 @@
       this.lblVJoy.TabIndex = 5;
       this.lblVJoy.Text = "...";
       // 
-      // lblSCdx
+      // label5
       // 
-      this.lblSCdx.AutoSize = true;
-      this.lblSCdx.Location = new System.Drawing.Point(101, 47);
-      this.lblSCdx.Name = "lblSCdx";
-      this.lblSCdx.Size = new System.Drawing.Size(16, 13);
-      this.lblSCdx.TabIndex = 6;
-      this.lblSCdx.Text = "...";
+      this.label5.AutoSize = true;
+      this.label5.Location = new System.Drawing.Point(6, 47);
+      this.label5.Name = "label5";
+      this.label5.Size = new System.Drawing.Size(89, 13);
+      this.label5.TabIndex = 4;
+      this.label5.Text = "SCdx - Keyboard:";
       // 
-      // cbxJoystick
+      // label4
       // 
-      this.cbxJoystick.FormattingEnabled = true;
-      this.cbxJoystick.Location = new System.Drawing.Point(161, 100);
-      this.cbxJoystick.Name = "cbxJoystick";
-      this.cbxJoystick.Size = new System.Drawing.Size(104, 21);
-      this.cbxJoystick.TabIndex = 12;
+      this.label4.AutoSize = true;
+      this.label4.Location = new System.Drawing.Point(6, 25);
+      this.label4.Name = "label4";
+      this.label4.Size = new System.Drawing.Size(79, 13);
+      this.label4.TabIndex = 4;
+      this.label4.Text = "vJoy - Joystick:";
       // 
       // FrmStatus
       // 
@@ -326,7 +326,7 @@
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.MaximizeBox = false;
       this.Name = "FrmStatus";
-      this.Text = "CS VJoy Server";
+      this.Text = "SC VJoy Server";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
       this.Load += new System.EventHandler(this.Form1_Load);
       this.groupBox1.ResumeLayout(false);

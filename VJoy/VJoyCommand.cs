@@ -97,12 +97,10 @@ namespace SCJoyServer.VJoy
         CtrlValue = 0;
       }
 
-      public bool IsValid
-      {
-        get {
-          return ( this.CtrlType != VJ_ControllerType.VJ_Unknown );
-        }
-      }
+      public bool IsValid { get => this.CtrlType != VJ_ControllerType.VJ_Unknown; }
+
+      // true if it is not a Key message
+      public bool IsVJoyMessage { get => this.CtrlType != VJ_ControllerType.DX_Key; }
 
     }; // class
 
@@ -326,7 +324,7 @@ namespace SCJoyServer.VJoy
           break;
 
         case "K": // Key press or release
-         // Key:      { "K": {"VKcode":n, "Mode":"p|r|t|d", "Modifier":"mod", "Delay":100}}  ; VKcode 0..255 WinUser VK_..
+                  // Key:      { "K": {"VKcode":n, "Mode":"p|r|t|d", "Modifier":"mod", "Delay":100}}  ; VKcode 0..255 WinUser VK_..
           jox = jo["K"] as JsonObject;
           if ( jox.ContainsKey( "Mode" ) ) {
             dir = (string)jox["Mode"];
