@@ -13,7 +13,7 @@ namespace SCJoyServer.VJoy
 #endif
     class VJoyCommand
   {
-    static private int VJ_MAXBUTTON = 32;  // the last allowed button number
+    static private int VJ_MAXBUTTON = 60;  // the last allowed button number
     static private int DEFAULT_DELAY = 100; // msec
 
     #region Command Type Def
