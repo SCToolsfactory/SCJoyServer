@@ -1,4 +1,4 @@
-SCJoyServer V 2.0.0.20<br>
+SCJoyServer V 2.0.1.22<br>
 ==========================<br>
 <br>
 SC Virtual Joystick Server  (.Net 4.6.2)<br>
@@ -25,11 +25,11 @@ Send commands like <br>
       // Slider:   { "S": {"Index":1|2, "Value":number}}                ; value 0..1000<br>
       // POV:      { "P": {"Index":1|2|3|4, "Direction":"c|r|l|u|d"}}   ; direction (center (released), right, left, up, down)<br>
 	  <br>
-      // Button:   { "B": {"Index":n, "Mode":"p|r|t|d", "Delay":100}}   ; Button index 1..VJ_MAXBUTTON<br>
-      // Key:      { "K": {"VKcode":n, "Mode":"p|r|t|d", "Modifier":"mod", "Delay":100}}  ; VKcode 0..255 WinUser VK_..<br>
+      // Button:   { "B": {"Index":n, "Mode":"p|r|t|s|d", "Delay":100}}   ; Button index 1..VJ_MAXBUTTON<br>
+      // Key:      { "K": {"VKcode":n, "Mode":"p|r|t|s|d", "Modifier":"mod", "Delay":100}}  ; VKcode 0..255 WinUser VK_..<br>
 	  <br>
-      // - Mode:    (p)ress, (r)elease, (t)ap, (d)ouble tap<br>
-      // - Modifier:  (n)one, (lc)trl, (rc)trl, (la)lt, (ra)lt   (optional - default=none - only one modifier is supported)<br>
+      // - Mode:    (p)ress, (r)elease, (t)ap, (s)hort tap, (d)ouble tap   (short tap is a tap with almost no delay)<br>
+      // - Modifier:  (n)one, (lc)trl, (rc)trl, (la)lt, (ra)lt, (ls)hift, (rs)hift   (optional - default=none - only one modifier is supported)<br>
 	  //   note: when using KeyDown / Up make sure to use the same modifier for both (else the modKey remains pressed...)<br>
       // - Delay:   nnnn  milliseconds (optional for Tap and Double Tap - default=100)<br>
 <br>

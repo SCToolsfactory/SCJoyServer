@@ -15,6 +15,7 @@ namespace SCJoyServer.VJoy
   {
     static private int VJ_MAXBUTTON = 60;  // the last allowed button number
     static private int DEFAULT_DELAY = 100; // msec
+    static private int DEFAULT_SHORTDELAY = 5; // msec - short tap const
 
     #region Command Type Def
 
@@ -39,6 +40,8 @@ namespace SCJoyServer.VJoy
       VJ_RCtrl,
       VJ_LAlt,
       VJ_RAlt,
+      VJ_LShift,
+      VJ_RShift,
     }
 
     public enum VJ_ControllerDirection
@@ -143,11 +146,11 @@ namespace SCJoyServer.VJoy
       // Slider:   { "S": {"Index":1|2, "Value":number}}                ; value 0..1000
       // POV:      { "P": {"Index":1|2|3|4, "Direction":"c|r|l|u|d"}}   ; direction (center (released), right, left, up, down)
 
-      // Button:   { "B": {"Index":n, "Mode":"p|r|t|d", "Delay":100}}   ; Button index 1..VJ_MAXBUTTON
-      // Key:      { "K": {"VKcode":n, "Mode":"p|r|t|d", "Modifier":"mod", "Delay":100}}  ; VKcode 0..255 WinUser VK_..
+      // Button:   { "B": {"Index":n, "Mode":"p|r|t|s|d", "Delay":100}}   ; Button index 1..VJ_MAXBUTTON
+      // Key:      { "K": {"VKcode":n, "Mode":"p|r|t|s|d", "Modifier":"mod", "Delay":100}}  ; VKcode 0..255 WinUser VK_..
 
-      // - Mode:      (p)ress, (r)elease, (t)ap, (d)ouble tap
-      // - Modifier:  (n)one, (lc)trl, (rc)trl, (la)lt, (ra)lt   (optional - default=none - only one modifier is supported)
+      // - Mode:      (p)ress, (r)elease, (t)ap, (s)hort tap, (d)ouble tap  (short tap is a tap with almost no delay)
+      // - Modifier:  (n)one, (lc)trl, (rc)trl, (la)lt, (ra)lt, (ls)hift, (rs)hift   (optional - default=none - only one modifier is supported)
       // - Delay:     nnnn  milliseconds (optional for Tap and Double Tap - default=100)
 
 
@@ -284,7 +287,7 @@ namespace SCJoyServer.VJoy
           break;
 
         case "B": // one of the buttons
-          // Button:   { "B": {"Index":n, "Mode":"p|r|t|d", "Delay":100}}   ; Button index 1..VJ_MAXBUTTON
+          // Button:   { "B": {"Index":n, "Mode":"p|r|t|s|d", "Delay":100}}   ; Button index 1..VJ_MAXBUTTON
           jox = jo["B"] as JsonObject;
           if ( jox.ContainsKey( "Mode" ) ) {
             dir = (string)jox["Mode"];
@@ -311,6 +314,10 @@ namespace SCJoyServer.VJoy
                   break;
                 case "t": // tap
                   retVal.CtrlDirection = VJ_ControllerDirection.VJ_Tap;
+                  break;
+                case "s": // short tap
+                  retVal.CtrlDirection = VJ_ControllerDirection.VJ_Tap;
+                  retVal.CtrlValue = DEFAULT_SHORTDELAY; // const for short tap
                   break;
                 case "d": // double tap
                   retVal.CtrlDirection = VJ_ControllerDirection.VJ_DoubleTap;
@@ -353,6 +360,10 @@ namespace SCJoyServer.VJoy
               case "t": // tap
                 retVal.CtrlDirection = VJ_ControllerDirection.VJ_Tap;
                 break;
+              case "s": // short tap
+                retVal.CtrlDirection = VJ_ControllerDirection.VJ_Tap;
+                retVal.CtrlValue = DEFAULT_SHORTDELAY; // const for short tap
+                break;
               case "d": // double tap
                 retVal.CtrlDirection = VJ_ControllerDirection.VJ_DoubleTap;
                 break;
@@ -372,6 +383,12 @@ namespace SCJoyServer.VJoy
                 break;
               case "ra": // rightAlt
                 retVal.CtrlModifier = VJ_Modifier.VJ_RAlt;
+                break;
+              case "ls": // leftShift
+                retVal.CtrlModifier = VJ_Modifier.VJ_LShift;
+                break;
+              case "rs": // rightShift
+                retVal.CtrlModifier = VJ_Modifier.VJ_RShift;
                 break;
               default: // none
                 retVal.CtrlModifier = VJ_Modifier.VJ_None;

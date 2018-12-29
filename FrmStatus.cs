@@ -40,6 +40,7 @@ namespace SCJoyServer
       txLocIP.Text = ServerManager.GetLocalIP( );
       pnlState.BackgroundImage = IL.Images["off"];
 
+      // vJoy DLL
       cbxJoystick.Items.Clear( );
       lblVJoy.Text = "not available";
       if ( vJoyInterfaceWrap.vJoy.isDllLoaded ) {
@@ -55,7 +56,15 @@ namespace SCJoyServer
         lblVJoy.Text = $"loaded   - {cbxJoystick.Items.Count:#} device(s)";
         tvJoy = null;
       }
-      lblSCdx.Text = ( DxKbd.SCdxKeyboard.isDllLoaded ) ? "loaded" : "not available";
+      // Kbd DLL
+      if ( DxKbd.SCdxKeyboard.isDllLoaded ) {
+        cbxKBon.Checked = true;
+        cbxKBon.Enabled = true;
+        lblSCdx.Text = "loaded";
+      }
+      else {
+        lblSCdx.Text = "not available";
+      }
       lblSignal.Text = "0";
     }
 
@@ -158,6 +167,12 @@ namespace SCJoyServer
       }
     }
 
+    private void cbxKBon_CheckedChanged( object sender, EventArgs e )
+    {
+      if ( DxKbd.SCdxKeyboard.isDllLoaded )
+        DxKbd.SCdxKeyboard.Enabled = cbxKBon.Checked;
+    }
+
     #endregion
 
 
@@ -198,5 +213,6 @@ namespace SCJoyServer
       // Activate the form.
       this.Activate( );
     }
+
   }
 }

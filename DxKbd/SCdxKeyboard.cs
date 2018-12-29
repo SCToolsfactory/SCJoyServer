@@ -29,31 +29,38 @@ namespace SCJoyServer.DxKbd
 {
   public class SCdxKeyboard
   {
+    public static bool Enabled { get; set; } = true;
+
     public static bool isDllLoaded { get => UnsafeNativeMethods.NativeModuleHandle != IntPtr.Zero; }
 
     public static void KeyDown( int vKey )
     {
-      UnsafeNativeMethods.KeyDown( vKey );
+      if ( Enabled )
+        UnsafeNativeMethods.KeyDown( vKey );
     }
 
     public static void KeyUp( int vKey )
     {
-      UnsafeNativeMethods.KeyUp( vKey );
+      if ( Enabled )
+        UnsafeNativeMethods.KeyUp( vKey );
     }
 
     public static void KeyTap( int vKey )
     {
-      UnsafeNativeMethods.KeyTap( vKey );
+      if ( Enabled )
+        UnsafeNativeMethods.KeyTap( vKey );
     }
 
     public static void KeyStroke( int vKey, uint msec )
     {
-      UnsafeNativeMethods.KeyStroke( vKey, msec );
+      if ( Enabled )
+        UnsafeNativeMethods.KeyStroke( vKey, msec );
     }
 
     public static void Sleep_ms( uint msec )
     {
-      UnsafeNativeMethods.Sleep_ms( msec );
+      if ( Enabled )
+        UnsafeNativeMethods.Sleep_ms( msec );
     }
 
   }

@@ -1,9 +1,9 @@
-SC vJoy Server V 2.00 - Build 21 BETA
-(c) Cassini - 23-Dec-2018
+SC vJoy Server V 2.0 - Build 22 BETA
+(c) Cassini - 27-Dec-2018
 
-Contains 14 files + graphics:
+Contains 6 files:
 
-SCJoyServer.exe              The program (V2.00)
+SCJoyServer.exe              The program (V2.00-B22)
 x64\SCdxKeyboard.dll         Native dll for Keyboard (v2.00)      - MUST be in the same folder as the Exe file
 x86\SCdxKeyboard.dll         Native dll for Keyboard (v2.00)      - MUST be in the same folder as the Exe file
 x64\vJoyInterface.dll        Native dll for vJoy (v2.00)          - MUST be in the same folder as the Exe file
@@ -22,6 +22,10 @@ Scanned for viruses before packing...
 cassini@burri-web.org
 
 Changelog:
+V 2.0-B22
+- added L/RShift modifier
+- added Short Tab command for convenience (very short down-up for button or key)
+- added checkbox to disable keystroke sending at the lowest level (debug still possible)
 V 2.0
 - complete rework 
 - The command is now Json syntax, supports also keystrokes sent to the active window.

@@ -55,6 +55,7 @@
       this.lblVJoy = new System.Windows.Forms.Label();
       this.label5 = new System.Windows.Forms.Label();
       this.label4 = new System.Windows.Forms.Label();
+      this.cbxKBon = new System.Windows.Forms.CheckBox();
       this.groupBox1.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.groupBox3.SuspendLayout();
@@ -267,6 +268,7 @@
       // 
       // groupBox3
       // 
+      this.groupBox3.Controls.Add(this.cbxKBon);
       this.groupBox3.Controls.Add(this.lblSCdx);
       this.groupBox3.Controls.Add(this.lblVJoy);
       this.groupBox3.Controls.Add(this.label5);
@@ -281,7 +283,7 @@
       // lblSCdx
       // 
       this.lblSCdx.AutoSize = true;
-      this.lblSCdx.Location = new System.Drawing.Point(101, 47);
+      this.lblSCdx.Location = new System.Drawing.Point(146, 47);
       this.lblSCdx.Name = "lblSCdx";
       this.lblSCdx.Size = new System.Drawing.Size(16, 13);
       this.lblSCdx.TabIndex = 6;
@@ -290,7 +292,7 @@
       // lblVJoy
       // 
       this.lblVJoy.AutoSize = true;
-      this.lblVJoy.Location = new System.Drawing.Point(100, 25);
+      this.lblVJoy.Location = new System.Drawing.Point(145, 25);
       this.lblVJoy.Name = "lblVJoy";
       this.lblVJoy.Size = new System.Drawing.Size(16, 13);
       this.lblVJoy.TabIndex = 5;
@@ -313,6 +315,18 @@
       this.label4.Size = new System.Drawing.Size(79, 13);
       this.label4.TabIndex = 4;
       this.label4.Text = "vJoy - Joystick:";
+      // 
+      // cbxKBon
+      // 
+      this.cbxKBon.AutoSize = true;
+      this.cbxKBon.Enabled = false;
+      this.cbxKBon.Location = new System.Drawing.Point(97, 46);
+      this.cbxKBon.Name = "cbxKBon";
+      this.cbxKBon.Size = new System.Drawing.Size(38, 17);
+      this.cbxKBon.TabIndex = 7;
+      this.cbxKBon.Text = "on";
+      this.cbxKBon.UseVisualStyleBackColor = true;
+      this.cbxKBon.CheckedChanged += new System.EventHandler(this.cbxKBon_CheckedChanged);
       // 
       // FrmStatus
       // 
@@ -366,6 +380,7 @@
     private System.Windows.Forms.Label label5;
     private System.Windows.Forms.Label label4;
     private System.Windows.Forms.ComboBox cbxJoystick;
+    private System.Windows.Forms.CheckBox cbxKBon;
   }
 }
 

@@ -88,6 +88,10 @@ namespace SCJoyServer.VJoy
         mod = DxKbd.SCdxKeycodes.VK_LALT;
       else if ( modifier == VJoyCommand.VJ_Modifier.VJ_RAlt )
         mod = DxKbd.SCdxKeycodes.VK_RALT;
+      else if ( modifier == VJoyCommand.VJ_Modifier.VJ_LShift )
+        mod = DxKbd.SCdxKeycodes.VK_LSHIFT;
+      else if ( modifier == VJoyCommand.VJ_Modifier.VJ_RShift )
+        mod = DxKbd.SCdxKeycodes.VK_RSHIFT;
 
       if ( press ) {
         KeyDown( mod );
