@@ -25,8 +25,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>22</ApplicationRevision>
-    <ApplicationVersion>2.0.1.%2a</ApplicationVersion>
+    <ApplicationRevision>23</ApplicationRevision>
+    <ApplicationVersion>2.0.2.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -89,6 +89,7 @@
     <Compile Include="Server\ServerManager.cs" />
     <Compile Include="Server\UdpClientDispatcher.cs" />
     <Compile Include="Server\XChar.cs" />
+    <Compile Include="Uploader\WebUploader.cs" />
     <Compile Include="VJoy\Json.cs" />
     <Compile Include="VJoy\VJoyHandler.cs" />
     <Compile Include="VJoy\VJoyCommand.cs" />

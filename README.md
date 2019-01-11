@@ -1,4 +1,4 @@
-SCJoyServer V 2.0.1.22<br>
+SCJoyServer V 2.0.2.23<br>
 ==========================<br>
 <br>
 SC Virtual Joystick Server  (.Net 4.6.2)<br>
@@ -35,6 +35,11 @@ Send commands like <br>
 <br>
 <br>
 Supports UDP and TCP protocol. For TCP there are up to 8 simultaneous clients served.<br>
+<br>
+It supports also file upload from a monitored directory to a WebServer with http POST.<br>
+The file is expected to be of type and extension .json<br>
+The WebServer must have uploads enabled and a PHP script fupload.php in the /data directory<br>
+to receive the upload POST request else you may need to change it in the WebUploader code.<br>
 <br>
 You may map the Virtual Joystick like any real one into SC by using e.g. SCJMapper-V2<br>
 <br>

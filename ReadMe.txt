@@ -1,9 +1,9 @@
-SC vJoy Server V 2.0 - Build 22 BETA
-(c) Cassini - 27-Dec-2018
+SC vJoy Server V 2.0 - Build 23 BETA
+(c) Cassini - 11-Jan-2019
 
 Contains 6 files:
 
-SCJoyServer.exe              The program (V2.00-B22)
+SCJoyServer.exe              The program (V2.00-B23)
 x64\SCdxKeyboard.dll         Native dll for Keyboard (v2.00)      - MUST be in the same folder as the Exe file
 x86\SCdxKeyboard.dll         Native dll for Keyboard (v2.00)      - MUST be in the same folder as the Exe file
 x64\vJoyInterface.dll        Native dll for vJoy (v2.00)          - MUST be in the same folder as the Exe file
@@ -22,6 +22,8 @@ Scanned for viruses before packing...
 cassini@burri-web.org
 
 Changelog:
+V 2.0-B23
+- added File monitor and uploader with http POST request
 V 2.0-B22
 - added L/RShift modifier
 - added Short Tab command for convenience (very short down-up for button or key)

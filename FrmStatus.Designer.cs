@@ -51,14 +51,30 @@
       this.IL = new System.Windows.Forms.ImageList(this.components);
       this.ICON = new System.Windows.Forms.NotifyIcon(this.components);
       this.groupBox3 = new System.Windows.Forms.GroupBox();
+      this.cbxKBon = new System.Windows.Forms.CheckBox();
       this.lblSCdx = new System.Windows.Forms.Label();
       this.lblVJoy = new System.Windows.Forms.Label();
       this.label5 = new System.Windows.Forms.Label();
       this.label4 = new System.Windows.Forms.Label();
-      this.cbxKBon = new System.Windows.Forms.CheckBox();
+      this.groupBox4 = new System.Windows.Forms.GroupBox();
+      this.pnlUpState = new System.Windows.Forms.Panel();
+      this.btUpStartStop = new System.Windows.Forms.Button();
+      this.txRemIP = new System.Windows.Forms.TextBox();
+      this.label6 = new System.Windows.Forms.Label();
+      this.label7 = new System.Windows.Forms.Label();
+      this.txRemPort = new System.Windows.Forms.TextBox();
+      this.fswUploader = new System.IO.FileSystemWatcher();
+      this.label8 = new System.Windows.Forms.Label();
+      this.txUpDir = new System.Windows.Forms.TextBox();
+      this.btUpDir = new System.Windows.Forms.Button();
+      this.SFD = new System.Windows.Forms.SaveFileDialog();
+      this.lblUpSignal = new System.Windows.Forms.Label();
+      this.label9 = new System.Windows.Forms.Label();
       this.groupBox1.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.groupBox3.SuspendLayout();
+      this.groupBox4.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.fswUploader)).BeginInit();
       this.SuspendLayout();
       // 
       // btStartStop
@@ -280,6 +296,18 @@
       this.groupBox3.TabStop = false;
       this.groupBox3.Text = "Device Support";
       // 
+      // cbxKBon
+      // 
+      this.cbxKBon.AutoSize = true;
+      this.cbxKBon.Enabled = false;
+      this.cbxKBon.Location = new System.Drawing.Point(97, 46);
+      this.cbxKBon.Name = "cbxKBon";
+      this.cbxKBon.Size = new System.Drawing.Size(38, 17);
+      this.cbxKBon.TabIndex = 7;
+      this.cbxKBon.Text = "on";
+      this.cbxKBon.UseVisualStyleBackColor = true;
+      this.cbxKBon.CheckedChanged += new System.EventHandler(this.cbxKBon_CheckedChanged);
+      // 
       // lblSCdx
       // 
       this.lblSCdx.AutoSize = true;
@@ -316,23 +344,148 @@
       this.label4.TabIndex = 4;
       this.label4.Text = "vJoy - Joystick:";
       // 
-      // cbxKBon
+      // groupBox4
       // 
-      this.cbxKBon.AutoSize = true;
-      this.cbxKBon.Enabled = false;
-      this.cbxKBon.Location = new System.Drawing.Point(97, 46);
-      this.cbxKBon.Name = "cbxKBon";
-      this.cbxKBon.Size = new System.Drawing.Size(38, 17);
-      this.cbxKBon.TabIndex = 7;
-      this.cbxKBon.Text = "on";
-      this.cbxKBon.UseVisualStyleBackColor = true;
-      this.cbxKBon.CheckedChanged += new System.EventHandler(this.cbxKBon_CheckedChanged);
+      this.groupBox4.Controls.Add(this.label9);
+      this.groupBox4.Controls.Add(this.lblUpSignal);
+      this.groupBox4.Controls.Add(this.btUpDir);
+      this.groupBox4.Controls.Add(this.txUpDir);
+      this.groupBox4.Controls.Add(this.label8);
+      this.groupBox4.Controls.Add(this.pnlUpState);
+      this.groupBox4.Controls.Add(this.btUpStartStop);
+      this.groupBox4.Controls.Add(this.txRemIP);
+      this.groupBox4.Controls.Add(this.label6);
+      this.groupBox4.Controls.Add(this.label7);
+      this.groupBox4.Controls.Add(this.txRemPort);
+      this.groupBox4.Location = new System.Drawing.Point(12, 482);
+      this.groupBox4.Name = "groupBox4";
+      this.groupBox4.Size = new System.Drawing.Size(271, 161);
+      this.groupBox4.TabIndex = 7;
+      this.groupBox4.TabStop = false;
+      this.groupBox4.Text = "Uploader";
+      // 
+      // pnlUpState
+      // 
+      this.pnlUpState.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+      this.pnlUpState.Location = new System.Drawing.Point(161, 100);
+      this.pnlUpState.Name = "pnlUpState";
+      this.pnlUpState.Size = new System.Drawing.Size(78, 26);
+      this.pnlUpState.TabIndex = 16;
+      // 
+      // btUpStartStop
+      // 
+      this.btUpStartStop.Location = new System.Drawing.Point(9, 92);
+      this.btUpStartStop.Name = "btUpStartStop";
+      this.btUpStartStop.Size = new System.Drawing.Size(55, 40);
+      this.btUpStartStop.TabIndex = 15;
+      this.btUpStartStop.Text = "Start Client";
+      this.btUpStartStop.UseVisualStyleBackColor = true;
+      this.btUpStartStop.Click += new System.EventHandler(this.btUpStartStop_Click);
+      // 
+      // txRemIP
+      // 
+      this.txRemIP.Location = new System.Drawing.Point(78, 13);
+      this.txRemIP.Name = "txRemIP";
+      this.txRemIP.Size = new System.Drawing.Size(161, 20);
+      this.txRemIP.TabIndex = 11;
+      this.txRemIP.Text = "192.168.1.1";
+      this.txRemIP.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+      // 
+      // label6
+      // 
+      this.label6.AutoSize = true;
+      this.label6.Location = new System.Drawing.Point(6, 41);
+      this.label6.Name = "label6";
+      this.label6.Size = new System.Drawing.Size(29, 13);
+      this.label6.TabIndex = 14;
+      this.label6.Text = "Port:";
+      // 
+      // label7
+      // 
+      this.label7.AutoSize = true;
+      this.label7.Location = new System.Drawing.Point(6, 16);
+      this.label7.Name = "label7";
+      this.label7.Size = new System.Drawing.Size(54, 13);
+      this.label7.TabIndex = 13;
+      this.label7.Text = "Server IP:";
+      // 
+      // txRemPort
+      // 
+      this.txRemPort.Location = new System.Drawing.Point(78, 38);
+      this.txRemPort.Name = "txRemPort";
+      this.txRemPort.Size = new System.Drawing.Size(161, 20);
+      this.txRemPort.TabIndex = 12;
+      this.txRemPort.Text = "8080";
+      this.txRemPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+      // 
+      // fswUploader
+      // 
+      this.fswUploader.EnableRaisingEvents = true;
+      this.fswUploader.Filter = "*.json";
+      this.fswUploader.SynchronizingObject = this;
+      this.fswUploader.Changed += new System.IO.FileSystemEventHandler(this.fswUploader_Changed);
+      this.fswUploader.Created += new System.IO.FileSystemEventHandler(this.fswUploader_Changed);
+      // 
+      // label8
+      // 
+      this.label8.AutoSize = true;
+      this.label8.Location = new System.Drawing.Point(6, 67);
+      this.label8.Name = "label8";
+      this.label8.Size = new System.Drawing.Size(60, 13);
+      this.label8.TabIndex = 17;
+      this.label8.Text = "Upload Dir:";
+      // 
+      // txUpDir
+      // 
+      this.txUpDir.Location = new System.Drawing.Point(78, 64);
+      this.txUpDir.Name = "txUpDir";
+      this.txUpDir.Size = new System.Drawing.Size(161, 20);
+      this.txUpDir.TabIndex = 18;
+      this.txUpDir.Text = "D:\\something";
+      this.txUpDir.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+      // 
+      // btUpDir
+      // 
+      this.btUpDir.Location = new System.Drawing.Point(237, 64);
+      this.btUpDir.Name = "btUpDir";
+      this.btUpDir.Size = new System.Drawing.Size(28, 20);
+      this.btUpDir.TabIndex = 19;
+      this.btUpDir.Text = "...";
+      this.btUpDir.UseVisualStyleBackColor = true;
+      this.btUpDir.Click += new System.EventHandler(this.btUpDir_Click);
+      // 
+      // SFD
+      // 
+      this.SFD.DefaultExt = "json";
+      this.SFD.Filter = "Json Files|*.json|All files|*.*";
+      this.SFD.OverwritePrompt = false;
+      this.SFD.SupportMultiDottedExtensions = true;
+      // 
+      // lblUpSignal
+      // 
+      this.lblUpSignal.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+      this.lblUpSignal.Location = new System.Drawing.Point(161, 132);
+      this.lblUpSignal.Name = "lblUpSignal";
+      this.lblUpSignal.Size = new System.Drawing.Size(104, 23);
+      this.lblUpSignal.TabIndex = 20;
+      this.lblUpSignal.Text = "1235";
+      this.lblUpSignal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+      // 
+      // label9
+      // 
+      this.label9.AutoSize = true;
+      this.label9.Location = new System.Drawing.Point(112, 106);
+      this.label9.Name = "label9";
+      this.label9.Size = new System.Drawing.Size(40, 13);
+      this.label9.TabIndex = 21;
+      this.label9.Text = "Status:";
       // 
       // FrmStatus
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(293, 484);
+      this.ClientSize = new System.Drawing.Size(293, 655);
+      this.Controls.Add(this.groupBox4);
       this.Controls.Add(this.groupBox3);
       this.Controls.Add(this.groupBox2);
       this.Controls.Add(this.groupBox1);
@@ -348,6 +501,9 @@
       this.groupBox2.ResumeLayout(false);
       this.groupBox3.ResumeLayout(false);
       this.groupBox3.PerformLayout();
+      this.groupBox4.ResumeLayout(false);
+      this.groupBox4.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.fswUploader)).EndInit();
       this.ResumeLayout(false);
 
     }
@@ -381,6 +537,20 @@
     private System.Windows.Forms.Label label4;
     private System.Windows.Forms.ComboBox cbxJoystick;
     private System.Windows.Forms.CheckBox cbxKBon;
+    private System.Windows.Forms.GroupBox groupBox4;
+    private System.Windows.Forms.TextBox txRemIP;
+    private System.Windows.Forms.Label label6;
+    private System.Windows.Forms.Label label7;
+    private System.Windows.Forms.TextBox txRemPort;
+    private System.Windows.Forms.Panel pnlUpState;
+    private System.Windows.Forms.Button btUpStartStop;
+    private System.IO.FileSystemWatcher fswUploader;
+    private System.Windows.Forms.Button btUpDir;
+    private System.Windows.Forms.TextBox txUpDir;
+    private System.Windows.Forms.Label label8;
+    private System.Windows.Forms.SaveFileDialog SFD;
+    private System.Windows.Forms.Label lblUpSignal;
+    private System.Windows.Forms.Label label9;
   }
 }
 
