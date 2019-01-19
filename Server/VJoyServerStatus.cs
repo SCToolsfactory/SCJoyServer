@@ -11,12 +11,19 @@
 
     public static VJoyServerStatus Instance { get; } = new VJoyServerStatus( );
 
-    DebugForm DBF = null; 
+    DebugForm DBF = null;
 
-    public void ShowDebug( )
+    public DebugForm ShowDebug( DebugForm dbf )
     {
-      if ( DBF == null ) DBF = new DebugForm();
+      if ( dbf == null ) {
+        DBF = new DebugForm( );
+      }
+      else {
+        DBF = dbf;
+      }
       DBF.Show( );
+
+      return DBF;
     }
 
     public void HideDebug( )

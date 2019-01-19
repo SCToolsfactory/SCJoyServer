@@ -25,8 +25,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>23</ApplicationRevision>
-    <ApplicationVersion>2.0.2.%2a</ApplicationVersion>
+    <ApplicationRevision>25</ApplicationRevision>
+    <ApplicationVersion>2.2.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppSettings.cs" />
     <Compile Include="DebugForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -75,6 +76,7 @@
     </Compile>
     <Compile Include="DxKbd\SCdxKeyboard.cs" />
     <Compile Include="DxKbd\SCdxKeycodes.cs" />
+    <Compile Include="Server\ServerFarm.cs" />
     <Compile Include="UnsafeNativeGeneric.cs" />
     <Compile Include="DxKbd\SCdxKeyboard_DLL.cs" />
     <Compile Include="Server\TcpClientDispatcher.cs" />
@@ -90,6 +92,7 @@
     <Compile Include="Server\UdpClientDispatcher.cs" />
     <Compile Include="Server\XChar.cs" />
     <Compile Include="Uploader\WebUploader.cs" />
+    <Compile Include="Uploader\WebUploaderStatus.cs" />
     <Compile Include="VJoy\Json.cs" />
     <Compile Include="VJoy\VJoyHandler.cs" />
     <Compile Include="VJoy\VJoyCommand.cs" />

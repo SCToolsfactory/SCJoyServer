@@ -91,6 +91,7 @@ namespace SCJoyServer.Server
     private IPAddress m_localAddr = IPAddress.Loopback;
     private TcpClientDispatcher m_vjDispatcherTcp = null;    // instance of the dispatcher
     private UdpClientDispatcher m_vjDispatcherUdp = null;    // instance of the dispatcher
+    private int m_port = 0;
 
     public bool UdpRunning { get; private set; } = false;
     public bool TcpRunning { get; private set; } = false;
@@ -105,7 +106,10 @@ namespace SCJoyServer.Server
     {
       if ( m_vjDispatcherUdp != null ) if ( m_vjDispatcherUdp.IsAlive ) return; // already running
 
+      VJoyServerStatus.Instance.Debug( $"Starting UDP at port {port} for Joystick#{jsIndex}\n" );
+
       // Start the client interface
+      m_port = port;
       IPAddress lAddr = m_localAddr;
       // see if we have a valid IP, else use loopback
       if ( !string.IsNullOrEmpty( sIpAddress ) ) {
@@ -117,12 +121,12 @@ namespace SCJoyServer.Server
       // First try to connect the Joystick interface
       if ( ( jsIndex < 1 ) || ( jsIndex > 16 ) ) {
         // valid case if the library is not loaded - no valid joystick index selected
-        Debug.Print( "\nno valid Joystick index supplied - will not use vJoy" );
+        VJoyServerStatus.Instance.Debug( $"\nno valid Joystick index supplied - will not use vJoy\n" );
       }
       else {
         if ( !VJoyHandler.Instance.Connect( jsIndex ) ) {
           VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Error );
-          Debug.Print( "\nERROR - cannot start the Joystick Handler ..." );
+          VJoyServerStatus.Instance.Debug( $"\nERROR - cannot start the Joystick Handler ...\n" );
           return; // ERROR - cannot connect
         }
       }
@@ -134,6 +138,7 @@ namespace SCJoyServer.Server
         VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Running ); // maintain status information 
       }
       else {
+        VJoyServerStatus.Instance.Debug( $"\nFailed to start the UDP dispatcher\n" );
         VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Error ); // maintain status information 
       }
     }
@@ -149,7 +154,10 @@ namespace SCJoyServer.Server
     {
       if ( m_vjDispatcherTcp != null ) if ( m_vjDispatcherTcp.IsAlive ) return; // already running
 
+      VJoyServerStatus.Instance.Debug( $"Starting TCP at port {port} for Joystick#{jsIndex}\n" );
+
       // Start the client interface
+      m_port = port;
       IPAddress lAddr = m_localAddr;
       // see if we have a valid IP, else use loopback
       if ( !string.IsNullOrEmpty( sIpAddress ) ) {
@@ -161,12 +169,12 @@ namespace SCJoyServer.Server
       // First try to connect the Joystick interface
       if ( ( jsIndex < 1 ) || ( jsIndex > 16 ) ) {
         // valid case if the library is not loaded - no valid joystick index selected
-        Debug.Print( "\nno valid Joystick index supplied - will not use vJoy" );
+        VJoyServerStatus.Instance.Debug( $"\nno valid Joystick index supplied - will not use vJoy\n" );
       }
       else {
         if ( !VJoyHandler.Instance.Connect( jsIndex ) ) {
           VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Error );
-          Debug.Print( "\nERROR - cannot start the Joystick Handler ..." );
+          VJoyServerStatus.Instance.Debug( $"\nERROR - cannot start the Joystick Handler ...\n" );
           return; // ERROR - cannot connect
         }
       }
@@ -178,6 +186,7 @@ namespace SCJoyServer.Server
         VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Running ); // maintain status information 
       }
       else {
+        VJoyServerStatus.Instance.Debug( $"\nFailed to start the TCP dispatcher\n" );
         VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Error ); // maintain status information 
       }
     }
@@ -191,6 +200,8 @@ namespace SCJoyServer.Server
       UdpRunning = false;
       TcpRunning = false;
       VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Shutdown ); // maintain status information 
+
+      VJoyServerStatus.Instance.Debug( $"\nStopping Server at port {m_port}\n" );
 
       // take down dispatcher
       if ( m_vjDispatcherTcp != null ) {

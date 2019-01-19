@@ -1,4 +1,4 @@
-SCJoyServer V 2.0.2.23<br>
+SCJoyServer V 2.2.0.25<br>
 ==========================<br>
 <br>
 SC Virtual Joystick Server  (.Net 4.6.2)<br>
@@ -34,6 +34,8 @@ Send commands like <br>
       // - Delay:   nnnn  milliseconds (optional for Tap and Double Tap - default=100)<br>
 <br>
 <br>
+Supports multiple UDP and TCP servers (one per vJoystick).<br>
+ Port increments with each active Joystick selected.<br>
 Supports UDP and TCP protocol. For TCP there are up to 8 simultaneous clients served.<br>
 <br>
 It supports also file upload from a monitored directory to a WebServer with http POST.<br>
