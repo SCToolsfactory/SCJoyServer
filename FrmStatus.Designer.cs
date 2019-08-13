@@ -33,6 +33,7 @@
       this.txPort = new System.Windows.Forms.TextBox();
       this.label1 = new System.Windows.Forms.Label();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.cbxJoystick = new System.Windows.Forms.CheckedListBox();
       this.lblSignal = new System.Windows.Forms.Label();
       this.cbxTcp = new System.Windows.Forms.CheckBox();
       this.cbxUdp = new System.Windows.Forms.CheckBox();
@@ -70,7 +71,6 @@
       this.fswUploader = new System.IO.FileSystemWatcher();
       this.SFD = new System.Windows.Forms.SaveFileDialog();
       this.lblVersion = new System.Windows.Forms.Label();
-      this.cbxJoystick = new System.Windows.Forms.CheckedListBox();
       this.groupBox1.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.groupBox3.SuspendLayout();
@@ -128,6 +128,14 @@
       this.groupBox1.TabIndex = 4;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Server";
+      // 
+      // cbxJoystick
+      // 
+      this.cbxJoystick.FormattingEnabled = true;
+      this.cbxJoystick.Location = new System.Drawing.Point(175, 17);
+      this.cbxJoystick.Name = "cbxJoystick";
+      this.cbxJoystick.Size = new System.Drawing.Size(90, 72);
+      this.cbxJoystick.TabIndex = 13;
       // 
       // lblSignal
       // 
@@ -455,7 +463,7 @@
       this.txRemPort.Name = "txRemPort";
       this.txRemPort.Size = new System.Drawing.Size(161, 22);
       this.txRemPort.TabIndex = 12;
-      this.txRemPort.Text = "8080";
+      this.txRemPort.Text = "9042";
       this.txRemPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
       // 
       // fswUploader
@@ -481,14 +489,6 @@
       this.lblVersion.Size = new System.Drawing.Size(44, 13);
       this.lblVersion.TabIndex = 8;
       this.lblVersion.Text = "label10";
-      // 
-      // cbxJoystick
-      // 
-      this.cbxJoystick.FormattingEnabled = true;
-      this.cbxJoystick.Location = new System.Drawing.Point(175, 17);
-      this.cbxJoystick.Name = "cbxJoystick";
-      this.cbxJoystick.Size = new System.Drawing.Size(90, 72);
-      this.cbxJoystick.TabIndex = 13;
       // 
       // FrmStatus
       // 

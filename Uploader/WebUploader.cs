@@ -30,7 +30,7 @@ namespace SCJoyServer.Uploader
     /// cTor: submit the webserver as host:port (localhost:8080  or 192.168.1.10:9000 ..)
     /// </summary>
     /// <param name="host_port">Host and port to use in http request</param>
-    public WebUploader( )
+    public WebUploader()
     {
       m_client = new WebClient( );
       m_connectionPool = new ClientConnectionPool( );
@@ -74,7 +74,7 @@ namespace SCJoyServer.Uploader
     /// </summary>
     public void Stop()
     {
-      WebClientRunning = false; 
+      WebClientRunning = false;
       WebUploaderStatus.Instance.SetSvrStatus( WebUploaderStatus.WCliStatus.Shutdown );
       m_continueProcess = false; // m_clientTask should die now
 
@@ -99,6 +99,8 @@ namespace SCJoyServer.Uploader
       m_reply = "Service already shutdown or not running ??!!";
       if ( !m_continueProcess ) return false;
       // some sanity..
+      m_reply = "Filename contains 'error' cannot send this file";
+      if ( filename.ToLowerInvariant().Contains("error" ) ) return false;
       m_reply = "File does not exist";
       if ( !File.Exists( filename ) ) return false;
       m_reply = "Client not created or vanished ??!!";
@@ -150,7 +152,7 @@ namespace SCJoyServer.Uploader
   /// </summary>
   class UploadService
   {
-    private const string m_uploadString = @"/data/fupload.php"; // this completes the URI path and php
+    private const string m_uploadString = @"/api/fileupload"; // this completes the URI route
 
     private WebClient m_client = null;
     private string m_filename = "";
@@ -181,7 +183,7 @@ namespace SCJoyServer.Uploader
           // gather the reply from php
           m_reply = $"{Encoding.ASCII.GetString( responseArray )}";
           if ( m_reply.ToLowerInvariant( ).Contains( "error" ) ) {
-            // as per definiton in fupload.php - Starts with "Error:..." or PHP itself replies with error
+            // as per definiton in server main.js - Starts with "Error:..." or other reply usually contains error
             // don't send a filename that contains 'error' though...
             return false;
           }
@@ -189,13 +191,19 @@ namespace SCJoyServer.Uploader
           return true;
         }
         catch ( WebException e ) {
-          // ERROR_SHARING_VIOLATION - 0x80070020 (-2147024864) - file in use
-          // ERROR_LOCK_VIOLATION    - 0x80070021 (-2147024863) - file locked
-          if ( ( e.InnerException.HResult == -2147024864 )
-            || ( e.InnerException.HResult == -2147024863 ) ) {
-            // catch file in use error once here and retry
-            // sometimes the filewatcher is just too fast...
-            retry--; // again..
+          if ( e.InnerException != null ) {
+            // ERROR_SHARING_VIOLATION - 0x80070020 (-2147024864) - file in use
+            // ERROR_LOCK_VIOLATION    - 0x80070021 (-2147024863) - file locked
+            if ( ( e.InnerException.HResult == -2147024864 )
+              || ( e.InnerException.HResult == -2147024863 ) ) {
+              // catch file in use error once here and retry
+              // sometimes the filewatcher is just too fast...
+              retry--; // again..
+            }
+            else {
+              m_reply = e.Message;
+              return false;
+            }
           }
           else {
             m_reply = e.Message;
