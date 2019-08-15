@@ -18,6 +18,7 @@
 *****************************************************************************
 *<hr>
 * @b Updates
+* - 15-Aug-2019 BM:Enabled defaults to false to not catch early keystrokes
 * - dd-mmm-yyyy V. Name: Description
 *
 *****************************************************************************/
@@ -29,7 +30,7 @@ namespace SCJoyServer.DxKbd
 {
   public class SCdxKeyboard
   {
-    public static bool Enabled { get; set; } = true;
+    public static bool Enabled { get; set; } = false; // default false - not true...
 
     public static bool isDllLoaded { get => UnsafeNativeMethods.NativeModuleHandle != IntPtr.Zero; }
 
