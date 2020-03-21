@@ -1,9 +1,8 @@
-SCJoyServer V 2.4.0.27<br>
+SCJoyServer V 2.5.0.28<br>
 ==========================<br>
 <br>
-SC Virtual Joystick Server  (.Net 4.6.2)<br>
+SC Virtual Joystick Server  (.Net 4.7.2)<br>
 <br>
-Note: this is a complete rework..<br>
 The command is now Json syntax, supports also keystrokes sent to the active window.<br>
 <br>
 provides an UDP and TCP Server that actuates ONE vJoy virtual Joystick and supplies keystrokes to the active window<br>
@@ -19,19 +18,40 @@ or for in machine use only use the loopback address (127.0.0.1)<br>
 Open e.g. Putty and then connect to the server (default port is 34123 but you may change it)<br>
 Send commands like <br>
 <br>
-      // Json message format is like:<br>
-      // Axis:     { "A": {"Direction":"X|Y|Z", "Value":number}}        ; value 0..1000<br>
-      // RotAxis:  { "R": {"Direction":"X|Y|Z", "Value":number}}        ; value 0..1000<br>
-      // Slider:   { "S": {"Index":1|2, "Value":number}}                ; value 0..1000<br>
-      // POV:      { "P": {"Index":1|2|3|4, "Direction":"c|r|l|u|d"}}   ; direction (center (released), right, left, up, down)<br>
-	  <br>
-      // Button:   { "B": {"Index":n, "Mode":"p|r|t|s|d", "Delay":100}}   ; Button index 1..VJ_MAXBUTTON<br>
-      // Key:      { "K": {"VKcode":n, "Mode":"p|r|t|s|d", "Modifier":"mod", "Delay":100}}  ; VKcode 0..255 WinUser VK_..<br>
-	  <br>
-      // - Mode:    (p)ress, (r)elease, (t)ap, (s)hort tap, (d)ouble tap   (short tap is a tap with almost no delay)<br>
-      // - Modifier:  (n)one, (lc)trl, (rc)trl, (la)lt, (ra)lt, (ls)hift, (rs)hift   (optional - default=none - only one modifier is supported)<br>
-	  //   note: when using KeyDown / Up make sure to use the same modifier for both (else the modKey remains pressed...)<br>
-      // - Delay:   nnnn  milliseconds (optional for Tap and Double Tap - default=100)<br>
+  Joystick:<br>
+    Axis:     { "A": {"Direction": "X|Y|Z", "Value": number} }<br>
+                - number => 0..1000 (normalized)<br>
+		Set the Axis to the value given (0->lower bound, 1000-> upper bound)<br>
+		<br>
+    RotAxis:  { "R": {"Direction": "X|Y|Z", "Value": number} }<br>
+                - number => 0..1000 (normalized)<br>
+		Set the Axis to the value given (0->lower bound, 1000-> upper bound)<br>
+    <br>
+    Slider:   { "S": {"Index": 1|2, "Value": number} }<br>
+                - number => 0..1000 (normalized)<br>
+		Set the Slider to the value given (0->lower bound, 1000-> upper bound)<br>
+    <br>
+    POV:      { "P": {"Index": 1|2|3|4, "Direction": "c | u | r | d | l" } }   <br>
+                - Index n=> 1..MaxPOV (setup of vJoy, max = 60 CIG limit)<br>
+                - Direction either of the chars (center (released), up, right, donw, left)<br>
+		Set the POV to the direction given (will stay there until another command changes this to e.g. center)<br>
+		<br>
+    Button:   { "B": {"Index": n, "Mode": "p|r|t|s|d", "Delay":100 } } <br>
+                - Button Index n => 1..VJ_MAXBUTTON (setup of vJoy)<br>
+                - Mode optional - either of the chars (see below)<br>
+	    Trigger the button with Index with the mode given (NOTE: a "p"ress needs a "r"elease later - otherwise it remains pressed!!)<br>
+		<br>
+  Keyboard:<br>
+    Key:      { "K": {"VKcode": "vk", "Mode": "p|r|t|s|d", "Modifier": "mod", "Delay": 100 } }  <br>
+                - VKcode KeyString or a number as string  n=> "1".."255"  ( VK_.. strings see separate Key Reference file KeyCodes.txt)<br>
+                - Mode optional - either of the chars (see below)<br>
+                - Modifier optional - a set of codes (see below)<br>
+	    Trigger the key with VKcode with the mode given (NOTE: a "p"ress needs a "r"elease later - otherwise it remains pressed!!)<br>
+		<br>
+		<br>
+     - Mode:     [mode]      (p)ress, (r)elease, (t)ap, (s)hort tap, (d)ouble tap           (default=tap - short tap is a tap with almost no delay)<br>
+     - Modifier: [mod[&mod]] (n)one, (lc)trl, (rc)trl, (la)lt, (ra)lt, (ls)hift, (rs)hift   (default=none - concat modifiers with & char)<br>
+     - Delay:    [delay]      nnnn  milliseconds, optional for Tap and Double Tap           (default=150)     <br>
 <br>
 <br>
 Supports multiple UDP and TCP servers (one per vJoystick).<br>

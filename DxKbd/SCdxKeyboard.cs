@@ -19,6 +19,7 @@
 *<hr>
 * @b Updates
 * - 15-Aug-2019 BM:Enabled defaults to false to not catch early keystrokes
+* - 21-Nar-2020 BM:Remove Enabled switch from Sleep ...
 * - dd-mmm-yyyy V. Name: Description
 *
 *****************************************************************************/
@@ -60,7 +61,6 @@ namespace SCJoyServer.DxKbd
 
     public static void Sleep_ms( uint msec )
     {
-      if ( Enabled )
         UnsafeNativeMethods.Sleep_ms( msec );
     }
 

@@ -33,6 +33,7 @@
       this.txPort = new System.Windows.Forms.TextBox();
       this.label1 = new System.Windows.Forms.Label();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.btMyIP = new System.Windows.Forms.Button();
       this.cbxJoystick = new System.Windows.Forms.CheckedListBox();
       this.lblSignal = new System.Windows.Forms.Label();
       this.cbxTcp = new System.Windows.Forms.CheckBox();
@@ -90,7 +91,7 @@
       // 
       // txPort
       // 
-      this.txPort.Location = new System.Drawing.Point(78, 42);
+      this.txPort.Location = new System.Drawing.Point(78, 67);
       this.txPort.Name = "txPort";
       this.txPort.Size = new System.Drawing.Size(91, 22);
       this.txPort.TabIndex = 2;
@@ -108,6 +109,7 @@
       // 
       // groupBox1
       // 
+      this.groupBox1.Controls.Add(this.btMyIP);
       this.groupBox1.Controls.Add(this.cbxJoystick);
       this.groupBox1.Controls.Add(this.lblSignal);
       this.groupBox1.Controls.Add(this.cbxTcp);
@@ -128,6 +130,16 @@
       this.groupBox1.TabIndex = 4;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Server";
+      // 
+      // btMyIP
+      // 
+      this.btMyIP.Location = new System.Drawing.Point(9, 36);
+      this.btMyIP.Name = "btMyIP";
+      this.btMyIP.Size = new System.Drawing.Size(52, 28);
+      this.btMyIP.TabIndex = 14;
+      this.btMyIP.Text = "myIP";
+      this.btMyIP.UseVisualStyleBackColor = true;
+      this.btMyIP.Click += new System.EventHandler(this.btMyIP_Click);
       // 
       // cbxJoystick
       // 
@@ -152,7 +164,7 @@
       this.cbxTcp.AutoSize = true;
       this.cbxTcp.Location = new System.Drawing.Point(70, 151);
       this.cbxTcp.Name = "cbxTcp";
-      this.cbxTcp.Size = new System.Drawing.Size(43, 17);
+      this.cbxTcp.Size = new System.Drawing.Size(44, 17);
       this.cbxTcp.TabIndex = 10;
       this.cbxTcp.Text = "TCP";
       this.cbxTcp.UseVisualStyleBackColor = true;
@@ -219,7 +231,7 @@
       // label3
       // 
       this.label3.AutoSize = true;
-      this.label3.Location = new System.Drawing.Point(6, 45);
+      this.label3.Location = new System.Drawing.Point(6, 70);
       this.label3.Name = "label3";
       this.label3.Size = new System.Drawing.Size(56, 13);
       this.label3.TabIndex = 4;
@@ -291,6 +303,8 @@
       // 
       this.cbxKBon.AutoSize = true;
       this.cbxKBon.Enabled = false;
+      this.cbxKBon.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.cbxKBon.ForeColor = System.Drawing.Color.DarkRed;
       this.cbxKBon.Location = new System.Drawing.Point(97, 46);
       this.cbxKBon.Name = "cbxKBon";
       this.cbxKBon.Size = new System.Drawing.Size(40, 17);
@@ -565,6 +579,7 @@
     private System.Windows.Forms.Label lblVersion;
     private System.Windows.Forms.Label lblWCliStatusTxt;
     private System.Windows.Forms.CheckedListBox cbxJoystick;
+    private System.Windows.Forms.Button btMyIP;
   }
 }
 

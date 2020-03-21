@@ -28,9 +28,11 @@
     private void InitializeComponent( )
     {
       this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DebugForm));
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
       this.btClose = new System.Windows.Forms.Button();
       this.rtb = new System.Windows.Forms.RichTextBox();
+      this.btClear = new System.Windows.Forms.Button();
       this.timer1 = new System.Windows.Forms.Timer(this.components);
       this.tableLayoutPanel1.SuspendLayout();
       this.SuspendLayout();
@@ -42,6 +44,7 @@
       this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
       this.tableLayoutPanel1.Controls.Add(this.btClose, 1, 1);
       this.tableLayoutPanel1.Controls.Add(this.rtb, 0, 0);
+      this.tableLayoutPanel1.Controls.Add(this.btClear, 0, 1);
       this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
       this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -75,6 +78,17 @@
       this.rtb.TabIndex = 1;
       this.rtb.Text = "";
       // 
+      // btClear
+      // 
+      this.btClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.btClear.Location = new System.Drawing.Point(249, 436);
+      this.btClear.Name = "btClear";
+      this.btClear.Size = new System.Drawing.Size(95, 30);
+      this.btClear.TabIndex = 2;
+      this.btClear.Text = "Clear Log";
+      this.btClear.UseVisualStyleBackColor = true;
+      this.btClear.Click += new System.EventHandler(this.btClear_Click);
+      // 
       // timer1
       // 
       this.timer1.Interval = 200;
@@ -86,6 +100,7 @@
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(694, 469);
       this.Controls.Add(this.tableLayoutPanel1);
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Name = "DebugForm";
       this.Text = "DebugForm";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DebugForm_FormClosing);
@@ -101,5 +116,6 @@
     private System.Windows.Forms.Button btClose;
     private System.Windows.Forms.RichTextBox rtb;
     private System.Windows.Forms.Timer timer1;
+    private System.Windows.Forms.Button btClear;
   }
 }

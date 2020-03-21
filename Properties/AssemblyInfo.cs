@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "" )]
 [assembly: AssemblyProduct( "SCJoyServer" )]
-[assembly: AssemblyCopyright( "Copyright ©  2019 Martin Burri" )]
+[assembly: AssemblyCopyright( "Copyright ©  2020 Martin Burri" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion( "2.3.0.26" )]
-[assembly: AssemblyFileVersion( "2.3.0.26" )]
+[assembly: AssemblyVersion( "2.5.0.28" )]
+[assembly: AssemblyFileVersion( "2.5.0.28" )]

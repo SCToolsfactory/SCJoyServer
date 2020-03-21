@@ -16,6 +16,8 @@ namespace SCJoyServer
   public partial class FrmStatus : Form
   {
 
+    private const string AppName = "SCJoyServer";
+
     #region Main Form
 
     private int m_msgReceived = 0;
@@ -31,6 +33,9 @@ namespace SCJoyServer
     private delegate void ExecWCliPing();
     private ExecWCliPing myDelExecWCliPing;
 
+    private string IconStringRunning { get => $"{AppName}\nService active"; }
+    private string IconStringStopped { get => $"{AppName}\nService stopped"; }
+    private string IconStringIdle { get => $"{AppName}\nService idle"; }
 
     /// <summary>
     /// Checks if a rectangle is visible on any screen
@@ -82,6 +87,8 @@ namespace SCJoyServer
       // BETA VERSION; TODO -  comment out if not longer
       //lblTitle.Text += " - V " + version.Substring( 0, version.IndexOf( ".", version.IndexOf( "." ) + 1 ) ); // PRODUCTION
       lblVersion.Text = "Version: " + version + " beta"; // BETA
+
+      ICON.Text = IconStringIdle;
 
       // setup the GUI
       // Server
@@ -163,7 +170,7 @@ namespace SCJoyServer
       lblUpSignal.Text = "0";
     }
 
-    // asynch counter update ZCP/UDP Server connection
+    // asynch counter update TCP/UDP Server connection
     private void Instance_ClientsPingEvent( object sender )
     {
       this.Invoke( myDelExecPing );
@@ -188,6 +195,8 @@ namespace SCJoyServer
 
     private void Form1_FormClosing( object sender, FormClosingEventArgs e )
     {
+      ICON.Text = IconStringStopped;
+
       // don't record minimized, maximized forms
       if ( this.WindowState == FormWindowState.Normal ) {
         AppSettings.Instance.FormLocation = this.Location;
@@ -244,9 +253,11 @@ namespace SCJoyServer
     {
       btStartStop.Enabled = false;
       if ( SVR.UdpRunning || SVR.TcpRunning ) {
+        ICON.Text = IconStringStopped;
         SVR.StopAllServers( );
         btStartStop.Text = "Start Server";
         pnlState.BackgroundImage = IL.Images["off"];
+        ICON.Text = IconStringIdle;
       }
       else {
         // start server(s)
@@ -289,9 +300,12 @@ namespace SCJoyServer
           AppSettings.Instance.UseTCP = cbxTcp.Checked;
           AppSettings.Instance.ReportClients = cbxReport.Checked;
           AppSettings.Instance.Save( );
+
+          ICON.Text = IconStringRunning;
         }
         else {
           pnlState.BackgroundImage = IL.Images["error"];
+          ICON.Text =IconStringIdle;
         }
       }
 
@@ -438,6 +452,10 @@ namespace SCJoyServer
       this.Activate( );
     }
 
+    private void btMyIP_Click( object sender, EventArgs e )
+    {
+      txLocIP.Text = ServerManager.GetLocalIP( );
+    }
 
   }
 }

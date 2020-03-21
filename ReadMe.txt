@@ -1,9 +1,9 @@
-SC vJoy Server V 2.4 - Build 27 BETA
-(c) Cassini - 13-Aug-2019
+SC vJoy Server V 2.5 - Build 28 BETA
+(c) Cassini - 21-Mar-2020
 
 Contains 6 files:
 
-SCJoyServer.exe              The program (V2.4-B27)
+SCJoyServer.exe              The program (V2.5-B28)
 x64\SCdxKeyboard.dll         Native dll for Keyboard (v2.00)      - MUST be in the same folder as the Exe file
 x86\SCdxKeyboard.dll         Native dll for Keyboard (v2.00)      - MUST be in the same folder as the Exe file
 x64\vJoyInterface.dll        Native dll for vJoy (v2.00)          - MUST be in the same folder as the Exe file
@@ -11,7 +11,7 @@ x86\vJoyInterface.dll        Native dll for vJoy (v2.00)          - MUST be in t
 
 ReadMe.txt                   This file
 
-SC Virtual Joystick Server (.Net 4.6.2)
+SC Virtual Joystick Server (.Net 4.7.2)
 
 Put all files into one folder and hit SCJoyServer.exe to run it
 
@@ -22,6 +22,14 @@ Scanned for viruses before packing...
 cassini@burri-web.org
 
 Changelog:
+V 2.5-B28
+- BREAKING CHANGE:
+  Key Command: VKcode field must be a string now - can contain a number OR a VK_KEYCODE string 
+  - see SCdxKeycodes.cs for valid names
+- add Key Modifier accepts multiple modifiers separated by & ("ls&la" for LeftShift+LeftAlt)
+- update to .Net 4.7.2
+- refact. Json parsing via .Net de-serialization
+- fix - no delay if kbd not enabled
 V 2.4-B27
 - fix - Init Keyserver disabled
 V 2.3-B26

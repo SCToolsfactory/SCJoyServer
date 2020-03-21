@@ -57,8 +57,12 @@ namespace SCJoyServer
       m_asyncMsgQ.Enqueue( e.Text );
     }
 
+
     #endregion
 
-
+    private void btClear_Click( object sender, EventArgs e )
+    {
+      rtb.Text = "";
+    }
   }
 }
