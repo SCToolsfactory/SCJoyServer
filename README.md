@@ -1,4 +1,4 @@
-SCJoyServer V 2.5.0.28<br>
+SCJoyServer V 2.7.0.30<br>
 ==========================<br>
 <br>
 SC Virtual Joystick Server  (.Net 4.7.2)<br>
@@ -42,8 +42,11 @@ Send commands like <br>
 	    Trigger the button with Index with the mode given (NOTE: a "p"ress needs a "r"elease later - otherwise it remains pressed!!)<br>
 		<br>
   Keyboard:<br>
-    Key:      { "K": {"VKcode": "vk", "Mode": "p|r|t|s|d", "Modifier": "mod", "Delay": 100 } }  <br>
-                - VKcode KeyString or a number as string  n=> "1".."255"  ( VK_.. strings see separate Key Reference file KeyCodes.txt)<br>
+    Key:      { "K": {"VKcodeEx": "keyName", "VKcode": n, "Mode": "p|r|t|s|d", "Modifier": "mod", "Delay": 100, "LED": "disp" } }  <br>
+                - VKcodeEx "s" either a number n=> 1..255 or a WinUser VK_.. literal (see separate Reference file)<br>
+                - VKcode n=> 1..255 WinUser VK_.. (see separate Reference file)<br>
+                    if both are found the VKcodeEx item gets priority and the VKcode element is ignored<br>
+                    if none is found the command is ignored<br>
                 - Mode optional - either of the chars (see below)<br>
                 - Modifier optional - a set of codes (see below)<br>
 	    Trigger the key with VKcode with the mode given (NOTE: a "p"ress needs a "r"elease later - otherwise it remains pressed!!)<br>

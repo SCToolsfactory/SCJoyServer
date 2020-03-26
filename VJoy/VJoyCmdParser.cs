@@ -35,27 +35,26 @@ namespace SCJoyServer.VJoy
           Slider:   { "S": {"Index": 1|2, "Value": number} }
                       - number => 0..1000 (normalized)
 
-          POV:      { "P": {"Index": 1|2|3|4, "Direction": "c | u | r | d | l", "LED": "disp" } }   
+          POV:      { "P": {"Index": 1|2|3|4, "Direction": "c | u | r | d | l" } }   
                       - Index n=> 1..MaxPOV (setup of vJoy, max = 60 CIG limit)
                       - Direction either of the chars (center (released), up, right, donw, left)
 
-          Button:   { "B": {"Index": n, "Mode": "p|r|t|s|d", "Delay":100, "LED": "disp" } } 
+          Button:   { "B": {"Index": n, "Mode": "p|r|t|s|d", "Delay":100 } } 
                       - Button Index n => 1..VJ_MAXBUTTON (setup of vJoy)
                       - Mode optional - either of the chars (see below)
 
           Keyboard:
-          Key:      { "K": {"VKcode": n, "Mode": "p|r|t|s|d", "Modifier": "mod", "Delay": 100, "LED": "disp" } }  
+          Key:      { "K": {"VKcodeEx": "keyName", "VKcode": n, "Mode": "p|r|t|s|d", "Modifier": "mod", "Delay": 100 } }  
+                      - VKcodeEx "s" either a number n=> 1..255 or a WinUser VK_.. literal (see separate Reference file)
                       - VKcode n=> 1..255 WinUser VK_.. (see separate Reference file)
+                         if both are found the VKcodeEx item gets priority and the VKcode element is ignored
+                         if none is found the command is ignored
                       - Mode optional - either of the chars (see below)
                       - Modifier optional - a set of codes (see below)
 
            - Mode:     [mode]      (p)ress, (r)elease, (t)ap, (s)hort tap, (d)ouble tap           (default=tap - short tap is a tap with almost no delay)
            - Modifier: [mod[&mod]] (n)one, (lc)trl, (rc)trl, (la)lt, (ra)lt, (ls)hift, (rs)hift   (default=none - concat modifiers with & char)
            - Delay:    [delay]      nnnn  milliseconds, optional for Tap and Double Tap           (default=150)     
-           - LED:      [disp]      (n)one,                                                        (default=none - only one modifier is supported)
-                                   (NG)green, (NR)ed, (LA)amber,   (Nose  Gear LED)
-                                   (LG)green, (LR)ed, (LA)amber,   (Left  Gear LED)
-                                   (RG)green, (RR)ed, (RA)amber    (Right Gear LED)  
       */
 
       [DataMember]
@@ -104,67 +103,6 @@ namespace SCJoyServer.VJoy
           cmd.CtrlValue = delay;
         else
           cmd.CtrlValue = VJCommand.DEFAULT_DELAY;
-      }
-
-      protected void HandleLED( ref VJCommand cmd, string ledString )
-      {
-        /*
-        if ( string.IsNullOrEmpty( ledString ) ) ledString = "n"; // none is default if nothing is given
-        switch ( ledString.ToUpperInvariant( ) ) {
-          case "NO": // Nose Off
-            cmd.CtrlLed = PFSP_HID.PFSwPanelLeds.GEAR_N;
-            cmd.CtrlLedColor = PFSP_HID.PFSwPanelLedState.Led_Off;
-            break;
-          case "NG": // Nose Green
-            cmd.CtrlLed = PFSP_HID.PFSwPanelLeds.GEAR_N;
-            cmd.CtrlLedColor = PFSP_HID.PFSwPanelLedState.Led_Green;
-            break;
-          case "NR": // Nose Red
-            cmd.CtrlLed = PFSP_HID.PFSwPanelLeds.GEAR_N;
-            cmd.CtrlLedColor = PFSP_HID.PFSwPanelLedState.Led_Red;
-            break;
-          case "NA": // Nose Amber
-            cmd.CtrlLed = PFSP_HID.PFSwPanelLeds.GEAR_N;
-            cmd.CtrlLedColor = PFSP_HID.PFSwPanelLedState.Led_Amber;
-            break;
-          case "LO": // Left Off
-            cmd.CtrlLed = PFSP_HID.PFSwPanelLeds.GEAR_L;
-            cmd.CtrlLedColor = PFSP_HID.PFSwPanelLedState.Led_Off;
-            break;
-          case "LG": // Left Green
-            cmd.CtrlLed = PFSP_HID.PFSwPanelLeds.GEAR_L;
-            cmd.CtrlLedColor = PFSP_HID.PFSwPanelLedState.Led_Green;
-            break;
-          case "LR": // Left Red
-            cmd.CtrlLed = PFSP_HID.PFSwPanelLeds.GEAR_L;
-            cmd.CtrlLedColor = PFSP_HID.PFSwPanelLedState.Led_Red;
-            break;
-          case "LA": // Left Amber
-            cmd.CtrlLed = PFSP_HID.PFSwPanelLeds.GEAR_L;
-            cmd.CtrlLedColor = PFSP_HID.PFSwPanelLedState.Led_Amber;
-            break;
-          case "RO": // Right Off
-            cmd.CtrlLed = PFSP_HID.PFSwPanelLeds.GEAR_R;
-            cmd.CtrlLedColor = PFSP_HID.PFSwPanelLedState.Led_Off;
-            break;
-          case "RG": // Right Green
-            cmd.CtrlLed = PFSP_HID.PFSwPanelLeds.GEAR_R;
-            cmd.CtrlLedColor = PFSP_HID.PFSwPanelLedState.Led_Green;
-            break;
-          case "RR": // Right Red
-            cmd.CtrlLed = PFSP_HID.PFSwPanelLeds.GEAR_R;
-            cmd.CtrlLedColor = PFSP_HID.PFSwPanelLedState.Led_Red;
-            break;
-          case "RA": // Right Amber
-            cmd.CtrlLed = PFSP_HID.PFSwPanelLeds.GEAR_R;
-            cmd.CtrlLedColor = PFSP_HID.PFSwPanelLedState.Led_Amber;
-            break;
-          default: // none
-            cmd.CtrlLed = PFSP_HID.PFSwPanelLeds.GEAR_NONE;
-            cmd.CtrlLedColor = PFSP_HID.PFSwPanelLedState.Led_Off;
-            break;
-        }
-        */
       }
 
       protected void HandleMode( ref VJCommand cmd, string modeString )
@@ -380,8 +318,6 @@ namespace SCJoyServer.VJoy
               break;
           }
 
-          HandleLED( ref retVal, LED );
-
           return retVal;
         }
       }
@@ -422,7 +358,6 @@ namespace SCJoyServer.VJoy
 
           HandleDelay( ref retVal, Delay );
           HandleMode( ref retVal, Mode );
-          HandleLED( ref retVal, LED );
 
           return retVal;
         }
@@ -440,8 +375,10 @@ namespace SCJoyServer.VJoy
                       - Button Index n => 1..VJ_MAXBUTTON (setup of vJoy)
                       - Mode optional - either of the chars (see below)
       */
-      [DataMember( IsRequired = true )]
-      public string VKcode { get; set; }
+      [DataMember]
+      public string VKcodeEx { get; set; }
+      [DataMember]
+      public int VKcode { get; set; } = 0;
       [DataMember]
       public string Mode { get; set; }
       [DataMember]
@@ -458,12 +395,17 @@ namespace SCJoyServer.VJoy
           var retVal = new VJCommand( );
 
           // either a number or a keyname
-          if ( int.TryParse( VKcode, out int code ) ) {
-            retVal.CtrlIndex = code;
+          if ( !string.IsNullOrEmpty(VKcodeEx)) {
+            if ( int.TryParse( VKcodeEx, out int code ) ) {
+              VKcode = code; // VKcodeEx has priority
+            }
+            else {
+              VKcode = SCdxKeycodes.KeyCodeFromKeyName( VKcodeEx );
+            }
           }
-          else {
-            retVal.CtrlIndex = SCdxKeycodes.KeyCodeFromKeyName( VKcode );
-          }
+          // merged VKCodeEx into VKcode if it was supplied
+          retVal.CtrlIndex = VKcode;
+
           if ( ( retVal.CtrlIndex < 1 ) || ( retVal.CtrlIndex > 0xff ) ) {
             return retVal; // ERROR - bail out on invalid number
           }
@@ -500,7 +442,6 @@ namespace SCJoyServer.VJoy
 
           HandleDelay( ref retVal, Delay );
           HandleMode( ref retVal, Mode );
-          HandleLED( ref retVal, LED );
 
           return retVal;
         }

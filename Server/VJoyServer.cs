@@ -24,7 +24,7 @@ namespace SCJoyServer.Server
     private NetworkStream m_networkStream;
 
     /// <summary>
-    /// cTor: Setup the client processing
+    /// cTor: Setup the client processing UDP
     /// </summary>
     public VJoyServer( byte[] data, int clientNumber )
     {
@@ -40,7 +40,7 @@ namespace SCJoyServer.Server
     }
 
     /// <summary>
-    /// cTor: Setup the client processing and wait for Process() to run 
+    /// cTor: Setup the client processing and wait for Process() to run  TCP
     /// </summary>
     /// <param name="ClientSocket">An incomming client connection</param>
     public VJoyServer( TcpClient ClientSocket, int clientNumber )
@@ -90,14 +90,18 @@ namespace SCJoyServer.Server
     #region Thread routine
 
     /// <summary>
-    /// Task Routine: Processes the clients requests
+    /// Task Routine: Processes the clients requests UDP
     /// This just processes the data at hand and returns to the clientdispatcher
     /// </summary>
-    public void ProcessData()
+    public void ProcessData() 
     {
       try {
-        // read from client and handle a telegram - it will care about invalid ones
-        VJoyHandler.Instance.HandleMessage( ProcessMessage( ) );
+        // read from client and handle telegrams - it will care about invalid ones
+        var vjCmd = ProcessMessage( );
+        while ( vjCmd.IsValid ) {
+          VJoyHandler.Instance.HandleMessage( vjCmd );
+          vjCmd = ProcessMessage( ); // get next (if there are any..
+        }
       }
       catch ( Exception e ) {
         DebugMsg( $"Other exception! {e}\n" );
@@ -126,6 +130,7 @@ namespace SCJoyServer.Server
       // see if we have a complete message from a previous receive
       VJoyCommand.VJCommand vjCmd = VJoyCommand.TranslateMessage( ref recvBuffer );
       if ( vjCmd.IsValid ) {
+        DebugMsg( $"Valid Cmd of type {vjCmd.CtrlType.ToString( )}\n" );
         m_RecvBuffer = recvBuffer; // save for next run
         Debug.Print( "Previous Message complete - start processing now" );
         return vjCmd; // regular exit with a valid message
@@ -139,6 +144,7 @@ namespace SCJoyServer.Server
         Debug.Print( "nRead: {0:D} - ", i );
         if ( i != 0 ) {
           recvBuffer += ascii.GetString( m_byteBuffer, 0, i );
+          Array.Resize( ref m_byteBuffer, 0 ); // content is used
           if ( recvBuffer.Length > 0 ) DebugMsg( $"Received data: {XChar.XS( recvBuffer )}\n" );
           // translate complete messages into commands (if there is one available)
           vjCmd = VJoyCommand.TranslateMessage( ref recvBuffer );
