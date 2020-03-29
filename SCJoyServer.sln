@@ -5,11 +5,16 @@ VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCJoyServer", "SCJoyServer.csproj", "{4CD075BA-1B19-496B-A28B-15FA80EB589C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vJoy_csWrapper", "..\vJoy_csWrapper\vJoy_csWrapper.csproj", "{E08C5D7D-F208-478F-B6E5-469CC1859244}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCJoyServer_Client", "SCJoyServer_Client\SCJoyServer_Client.csproj", "{AABB094D-C9D8-4859-9333-00B7E0E6AC76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCJoyServer_Client", "..\SCJoyServer_Client\SCJoyServer_Client.csproj", "{AABB094D-C9D8-4859-9333-00B7E0E6AC76}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{21B35315-9E5D-4803-8E8F-6120F0673601}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+		ReadMe.txt = ReadMe.txt
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UT_VJServer2", "..\UT_VJServer2\UT_VJServer2.csproj", "{06581ED0-855B-413A-AF89-0D36C12E10E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UT_VJServer3", "UT_VJServer3\UT_VJServer3.csproj", "{9AE8420D-7DDF-4786-A599-0C196706C4C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,18 +26,14 @@ Global
 		{4CD075BA-1B19-496B-A28B-15FA80EB589C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CD075BA-1B19-496B-A28B-15FA80EB589C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CD075BA-1B19-496B-A28B-15FA80EB589C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E08C5D7D-F208-478F-B6E5-469CC1859244}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E08C5D7D-F208-478F-B6E5-469CC1859244}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E08C5D7D-F208-478F-B6E5-469CC1859244}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E08C5D7D-F208-478F-B6E5-469CC1859244}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AABB094D-C9D8-4859-9333-00B7E0E6AC76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AABB094D-C9D8-4859-9333-00B7E0E6AC76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AABB094D-C9D8-4859-9333-00B7E0E6AC76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AABB094D-C9D8-4859-9333-00B7E0E6AC76}.Release|Any CPU.Build.0 = Release|Any CPU
-		{06581ED0-855B-413A-AF89-0D36C12E10E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{06581ED0-855B-413A-AF89-0D36C12E10E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{06581ED0-855B-413A-AF89-0D36C12E10E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{06581ED0-855B-413A-AF89-0D36C12E10E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AE8420D-7DDF-4786-A599-0C196706C4C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AE8420D-7DDF-4786-A599-0C196706C4C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AE8420D-7DDF-4786-A599-0C196706C4C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AE8420D-7DDF-4786-A599-0C196706C4C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

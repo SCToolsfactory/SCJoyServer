@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Diagnostics;
 
 using SCJoyServer.VJoy;
+using vjMapper.VjOutput;
 
 namespace SCJoyServer.Server
 {
@@ -123,12 +124,12 @@ namespace SCJoyServer.Server
     /// </remarks>
     /// <param name="stream">The network stream</param>
     /// <returns>A message, either valid or invalid</returns>
-    private VJoyCommand.VJCommand ProcessMessage()
+    private VJCommand ProcessMessage()
     {
       string recvBuffer = m_RecvBuffer; // load from last run
 
       // see if we have a complete message from a previous receive
-      VJoyCommand.VJCommand vjCmd = VJoyCommand.TranslateMessage( ref recvBuffer );
+      VJCommand vjCmd = VJoyCommand.TranslateMessage( ref recvBuffer );
       if ( vjCmd.IsValid ) {
         DebugMsg( $"Valid Cmd of type {vjCmd.CtrlType.ToString( )}\n" );
         m_RecvBuffer = recvBuffer; // save for next run
@@ -163,7 +164,7 @@ namespace SCJoyServer.Server
         // client did not answer in time - this is OK
       }
 
-      return new VJoyCommand.VJCommand( ); // the client did not complete the message - try next time
+      return new VJCommand( ); // the client did not complete the message - try next time
 
     }//ProcessMessage
 
@@ -200,12 +201,12 @@ namespace SCJoyServer.Server
     /// </remarks>
     /// <param name="stream">The network stream</param>
     /// <returns>A message, either valid or invalid</returns>
-    private VJoyCommand.VJCommand RecvMessage( NetworkStream stream )
+    private VJCommand RecvMessage( NetworkStream stream )
     {
       string recvBuffer = m_RecvBuffer; // load from last run
 
       // see if we have a complete message from a previous receive
-      VJoyCommand.VJCommand vjCmd = VJoyCommand.TranslateMessage( ref recvBuffer );
+      VJCommand vjCmd = VJoyCommand.TranslateMessage( ref recvBuffer );
       if ( vjCmd.IsValid ) {
         m_RecvBuffer = recvBuffer; // save for next run
         Debug.Print( "Previous Message complete - start processing now" );
@@ -245,7 +246,7 @@ namespace SCJoyServer.Server
         // client did not answer in time - this is OK
       }
 
-      return new VJoyCommand.VJCommand( ); // the client did not complete the message - try next time
+      return new VJCommand( ); // the client did not complete the message - try next time
 
     }//RecvMessage
 

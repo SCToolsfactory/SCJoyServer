@@ -1,13 +1,18 @@
-SC vJoy Server V 2.7 - Build 30 BETA
-(c) Cassini - 26-Mar-2020
+SC vJoy Server V 2.8 - Build 31 BETA
+(c) Cassini - 29-Mar-2020
 
 Contains 6 files:
 
 SCJoyServer.exe              The program (V2.7-B30)
-x64\SCdxKeyboard.dll         Native dll for Keyboard (v2.00)      - MUST be in the same folder as the Exe file
-x86\SCdxKeyboard.dll         Native dll for Keyboard (v2.00)      - MUST be in the same folder as the Exe file
-x64\vJoyInterface.dll        Native dll for vJoy (v2.00)          - MUST be in the same folder as the Exe file
-x86\vJoyInterface.dll        Native dll for vJoy (v2.00)          - MUST be in the same folder as the Exe file
+
+- All libraries below MUST be in the same folder as the Exe file
+vjMapper.dll				 Mapping library for Json Commands
+dxKbdInterfaceWrap.dll	     Wrapper for the native DLL
+  x64\SCdxKeyboard.dll       Native dll for Keyboard (v2.00)
+  x86\SCdxKeyboard.dll       Native dll for Keyboard (v2.00)
+vJoy_csWrapper.dll			 Wrapper for the native DLL
+  x64\vJoyInterface.dll      Native dll for vJoy (v2.00)
+  x86\vJoyInterface.dll      Native dll for vJoy (v2.00)
 
 ReadMe.txt                   This file
 
@@ -22,6 +27,8 @@ Scanned for viruses before packing...
 cassini@burri-web.org
 
 Changelog:
+V 2.8-B31
+- refact use common libraries (new dlls to include)
 V 2.7-B30
 - update Process multiple commands from one UDP message
 V 2.6-B29

@@ -1,10 +1,9 @@
 ﻿using System;
-
-using static SCJoyServer.DxKbd.SCdxKeyboard;
-using static vJoyInterfaceWrap.vJoyData;
 using vJoyInterfaceWrap;
+using dxKbdInterfaceWrap;
+using static dxKbdInterfaceWrap.SCdxKeyboard;
 using SCJoyServer.Server;
-using SCJoyServer.DxKbd;
+using vjMapper.VjOutput;
 
 namespace SCJoyServer.VJoy
 {
@@ -23,13 +22,35 @@ namespace SCJoyServer.VJoy
     private vJoystick m_vJoystick; // my virtual JS
     private uint m_jsId = 0; // invalid
 
+    /// <summary>
+    /// Check if Kbd and vJoy are available
+    /// </summary>
+    /// <returns>Returns true if Kbd and vJoy are available</returns>
+    public bool AreLibrariesLoaded()
+    {
+      bool ret = true;
+      ret &= vJoy.isDllLoaded;
+      ret &= SCdxKeyboard.isDllLoaded;
+      return ret;
+    }
+
+    /// <summary>
+    /// Return the connection joystick state
+    /// </summary>
     public bool Connected { get; private set; } = false;
 
+    /// <summary>
+    /// Connect to a Joystick instance
+    /// </summary>
+    /// <param name="n">The joystick ID 1..16</param>
+    /// <returns>True if successfull</returns>
     public bool Connect( int n )
     {
       if ( Connected ) return true; // already connected
       try {
-        if ( n <= 0 || n > 16 ) return false; // ERROR exit
+        if ( !vJoy.isDllLoaded ) return false; // ERROR exit, dll not loaded
+
+        if ( n <= 0 || n > 16 ) return false;  // ERROR exit, invalid Js ID
         m_jsId = (uint)n;
         m_joystick = new vJoy( );
         if ( !m_joystick.vJoyEnabled( ) ) {
@@ -107,13 +128,14 @@ namespace SCJoyServer.VJoy
     /// Dispatch the command message 
     /// </summary>
     /// <param name="message">A VJoy Message</param>
-    public bool HandleMessage( VJoyCommand.VJCommand message )
+    public bool HandleMessage( VJCommand message )
     {
-      if ( !message.IsValid ) return false; // ERROR - bail out for unde messages
+      if ( !AreLibrariesLoaded() ) return false; // ERROR - bail out for missing libraries
+      if ( !message.IsValid ) return false; // ERROR - bail out for undef messages
 
       bool retVal = false;
 
-      if ( message.IsVJoyMessage ) {
+      if ( message.IsVJoyCommand ) {
         // mutual exclusive access to the device
         if ( !Connected ) return false; // bail out if vJoy is not available
 

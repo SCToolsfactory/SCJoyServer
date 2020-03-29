@@ -25,8 +25,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>29</ApplicationRevision>
-    <ApplicationVersion>2.6.0.%2a</ApplicationVersion>
+    <ApplicationRevision>31</ApplicationRevision>
+    <ApplicationVersion>2.8.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -57,6 +57,9 @@
     <ApplicationIcon>SCJS.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="dxKbdInterfaceWrap">
+      <HintPath>ExtLibraries\dxKbdInterfaceWrap.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -68,28 +71,30 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="vjMapper">
+      <HintPath>ExtLibraries\vjMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="vJoy_csWrapper">
+      <HintPath>ExtLibraries\vJoy_csWrapper.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppSettings.cs" />
-    <Compile Include="DebugForm.cs">
+    <Compile Include="AApp\AppSettings.cs" />
+    <Compile Include="AApp\DebugForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DebugForm.Designer.cs">
+    <Compile Include="AApp\DebugForm.Designer.cs">
       <DependentUpon>DebugForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="DxKbd\SCdxKeyboard.cs" />
-    <Compile Include="DxKbd\SCdxKeycodes.cs" />
     <Compile Include="Server\ServerFarm.cs" />
-    <Compile Include="UnsafeNativeGeneric.cs" />
-    <Compile Include="DxKbd\SCdxKeyboard_DLL.cs" />
     <Compile Include="Server\TcpClientDispatcher.cs" />
-    <Compile Include="FrmStatus.cs">
+    <Compile Include="AApp\FrmStatus.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmStatus.Designer.cs">
+    <Compile Include="AApp\FrmStatus.Designer.cs">
       <DependentUpon>FrmStatus.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
+    <Compile Include="AApp\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server\ServerManager.cs" />
     <Compile Include="Server\UdpClientDispatcher.cs" />
@@ -103,13 +108,10 @@
     <Compile Include="Server\VJoyServer.cs" />
     <Compile Include="Server\VJoyServerStatus.cs" />
     <Compile Include="VJoy\vJoystick.cs" />
-    <Compile Include="vJoy_csWrapper\vJoy.cs" />
-    <Compile Include="vJoy_csWrapper\vJoyData.cs" />
-    <Compile Include="vJoy_csWrapper\vJoyInterface_DLL.cs" />
-    <EmbeddedResource Include="DebugForm.resx">
+    <EmbeddedResource Include="AApp\DebugForm.resx">
       <DependentUpon>DebugForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmStatus.resx">
+    <EmbeddedResource Include="AApp\FrmStatus.resx">
       <DependentUpon>FrmStatus.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -122,9 +124,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="app.config" />
-    <None Include="LICENSE" />
-    <None Include="packages.config" />
+    <None Include="AApp\app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -134,12 +134,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="README.md" />
     <None Include="SupportBinaries\SupportingDLLs.zip" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Cassini_Logo_Icon.ico" />
-    <Content Include="ReadMe.txt" />
     <Content Include="SCJS.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +164,17 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>xcopy $(SolutionDir)ExtLibraries\vjMapper.dll  $(TargetDir) /I /Y
+
+xcopy $(SolutionDir)ExtLibraries\dxKbdInterfaceWrap.dll  $(TargetDir) /I /Y
+xcopy $(SolutionDir)ExtLibraries\x86\SCdxKeyboard.dll  $(TargetDir)\x86 /I /Y
+xcopy $(SolutionDir)ExtLibraries\x64\SCdxKeyboard.dll  $(TargetDir)\x64 /I /Y
+
+xcopy $(SolutionDir)ExtLibraries\vJoy_csWrapper.dll  $(TargetDir) /I /Y
+xcopy $(SolutionDir)ExtLibraries\x86\vJoyInterface.dll  $(TargetDir)\x86 /I /Y
+xcopy $(SolutionDir)ExtLibraries\x64\vJoyInterface.dll  $(TargetDir)\x64 /I /Y</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
