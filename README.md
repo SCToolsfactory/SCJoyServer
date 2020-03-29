@@ -23,7 +23,7 @@ Also note there is no security built in yet, i.e. if the server listens on the L
 Open e.g. Putty and then connect to the server (default port is 34123 but you may change it)  
 
 Send commands like 
-´  
+
   Joystick:  
 
     Axis:     { "A": {"Direction": "X|Y|Z", "Value": number} }  
@@ -62,7 +62,7 @@ Send commands like
      - Mode:     [mode]      (p)ress, (r)elease, (t)ap, (s)hort tap, (d)ouble tap           (default=tap - short tap is a tap with almost no delay)  
      - Modifier: [mod[&mod]] (n)one, (lc)trl, (rc)trl, (la)lt, (ra)lt, (ls)hift, (rs)hift   (default=none - concat modifiers with & char)  
      - Delay:    [delay]      nnnn  milliseconds, optional for Tap and Double Tap           (default=150)       
-´
+
 
 Supports multiple UDP and TCP servers (one per vJoystick).  
  The Network port increments with each active Joystick selected.  
@@ -77,20 +77,20 @@ You may map the Virtual Joystick like any real one into SC by using e.g. SCJMapp
 
 # Usage 
 
-*A WebPage sending commands to control one vJoy device and sending Kbd Input 
-*A RasPi with its own GUI sending commands to control one vJoy device and sending Kbd Input 
-*Your idea ....
+* A WebPage sending commands to control one vJoy device and sending Kbd Input 
+* A RasPi with its own GUI sending commands to control one vJoy device and sending Kbd Input 
+* Your idea ....
 
 In order to use the server one has to add the library DLLs 
 
-Just within the application Exe folder:
-*vjMapper.dll                 Command Mapping Library
-*dxKbdInterfaceWrap.dll       application keyboard typing support
-*  x64\SCdxKeyboard.dll       (64bit version)
-*  x86\SCdxKeyboard.dll       (32bit version)
-*vJoy_csWrapper.dll           vJoy Access Library
-*  x64\vJoyInterface.dll      (from vJoy218SDK-291116 - 64bit)
-*  x86\vJoyInterface.dll      (from vJoy218SDK-291116 - 32bit)
+Just within the application Exe folder:  
+* vjMapper.dll                 Command Mapping Library
+* dxKbdInterfaceWrap.dll       application keyboard typing support
+*   x64\SCdxKeyboard.dll       (64bit version)
+*   x86\SCdxKeyboard.dll       (32bit version)
+* vJoy_csWrapper.dll           vJoy Access Library
+*   x64\vJoyInterface.dll      (from vJoy218SDK-291116 - 64bit)
+*   x86\vJoyInterface.dll      (from vJoy218SDK-291116 - 32bit)
 
 
 
