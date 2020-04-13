@@ -1,4 +1,4 @@
-# SCJoyServer V 2.7.0.30
+# SCJoyServer V 2.9.0.31
 
 Provides an UDP and TCP Server that actuates vJoy virtual Joysticks and supplies keystrokes to the active window  
 
@@ -26,24 +26,24 @@ Send commands like
 
   Joystick:  
 
-    Axis:     { "A": {"Direction": "X|Y|Z", "Value": number} }  
+    Axis:     { "A": {"Direction": "X|Y|Z", "Value": number, "JNo": j} }  
                 - number => 0..1000 (normalized)  
 		Set the Axis to the value given (0->lower bound, 1000-> upper bound)  
 
-    RotAxis:  { "R": {"Direction": "X|Y|Z", "Value": number} }  
+    RotAxis:  { "R": {"Direction": "X|Y|Z", "Value": number, "JNo": j} }  
                 - number => 0..1000 (normalized)  
 		Set the Axis to the value given (0->lower bound, 1000-> upper bound)  
 
-    Slider:   { "S": {"Index": 1|2, "Value": number} }  
+    Slider:   { "S": {"Index": 1|2, "Value": number, "JNo": j} }  
                 - number => 0..1000 (normalized)  
 		Set the Slider to the value given (0->lower bound, 1000-> upper bound)  
 
-    POV:      { "P": {"Index": 1|2|3|4, "Direction": "c | u | r | d | l" } }    
+    POV:      { "P": {"Index": 1|2|3|4, "Direction": "c | u | r | d | l", "JNo": j} }    
                 - Index n=> 1..MaxPOV (setup of vJoy, max = 60 CIG limit)  
                 - Direction either of the chars (center (released), up, right, donw, left)  
 		Set the POV to the direction given (will stay there until another command changes this to e.g. center)  
 
-    Button:   { "B": {"Index": n, "Mode": "p|r|t|s|d", "Delay":100 } }   
+    Button:   { "B": {"Index": n, "Mode": "p|r|t|s|d", "Delay":100, "JNo": j} }   
                 - Button Index n => 1..VJ_MAXBUTTON (setup of vJoy)  
                 - Mode optional - either of the chars (see below)  
 	    Trigger the button with Index with the mode given (NOTE: a "p"ress needs a "r"elease later - otherwise it remains pressed!!)  
@@ -62,12 +62,16 @@ Send commands like
      - Mode:     [mode]      (p)ress, (r)elease, (t)ap, (s)hort tap, (d)ouble tap           (default=tap - short tap is a tap with almost no delay)  
      - Modifier: [mod[&mod]] (n)one, (lc)trl, (rc)trl, (la)lt, (ra)lt, (ls)hift, (rs)hift   (default=none - concat modifiers with & char)  
      - Delay:    [delay]      nnnn  milliseconds, optional for Tap and Double Tap           (default=150)       
+     - JNo:      [joyNumber] >0 Joystick number                                             (default=1)
 
-
-Supports multiple UDP and TCP servers (one per vJoystick).  
- The Network port increments with each active Joystick selected.  
 
 Supports UDP and TCP protocol. For TCP there are up to 8 simultaneous clients served.  
+The primary port accepts commands directed to any vJoy (JNo) device enabled.
+
+Legacy support: (try to include the JNo as soon as possible..)  
+Supports multiple UDP and TCP servers (one per vJoystick for devices >1).  
+The Network port increments with each active Joystick selected. Don't leave gaps - else the indexing is messed up..  
+If JNo is not provided it defaults to 1. To send such command to JNo N  send commands to port+(N-1)  
 
 It supports also file upload from a monitored directory to a WebServer with http POST.  
 The file is expected to be of type and extension .json  
@@ -79,12 +83,15 @@ You may map the Virtual Joystick like any real one into SC by using e.g. SCJMapp
 
 * A WebPage sending commands to control one vJoy device and sending Kbd Input 
 * A RasPi with its own GUI sending commands to control one vJoy device and sending Kbd Input 
+* A MFD display utility  
+* A Switch panel utility that does not provide native Joystick/Keyboard input  
 * Your idea ....
 
 In order to use the server one has to add the library DLLs 
 
 Just within the application Exe folder:  
 * vjMapper.dll                 Command Mapping Library
+* vjAction.dll                 Command Execution Library
 * dxKbdInterfaceWrap.dll       application keyboard typing support
 *   x64\SCdxKeyboard.dll       (64bit version)
 *   x86\SCdxKeyboard.dll       (32bit version)

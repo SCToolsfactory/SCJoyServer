@@ -75,6 +75,10 @@ namespace SCJoyServer
       VJoyServerStatus.Instance.ClientsPingEvent += Instance_ClientsPingEvent;
       WebUploaderStatus.Instance.WCliStatusEvent += new WebUploaderStatus.WCliStatusEventHandler( Instance_WCliStatusEvent );
       WebUploaderStatus.Instance.WCliPingEvent += Instance_WCliPingEvent;
+      // connect to feedback from vjAction
+      vjAction.vJoy.vJoyHandler.Instance.Ping += vJoy_Ping;
+      vjAction.Kbd.KbdHandler.Instance.Ping += Kbd_Ping;
+
 
       AppSettings.Instance.Reload( );
 
@@ -133,10 +137,9 @@ namespace SCJoyServer
       // vJoy DLL
       cbxJoystick.Items.Clear( );
       lblVJoy.Text = "not available";
-      if ( vJoyInterfaceWrap.vJoy.isDllLoaded ) {
-        var tvJoy = new vJoyInterfaceWrap.vJoy( );
-        for ( uint i = 1; i <= 16; i++ ) {
-          if ( tvJoy.isVJDExists( i ) ) {
+      if ( vjAction.vjActionHandler.IsvJoyDllLoaded ) {
+        for ( int i = 1; i <= 16; i++ ) {
+          if ( vjAction.vjActionHandler.IsvJoyDeviceExists( i ) ) {
             cbxJoystick.Items.Add( $"Joystick#{i}" );
           }
         }
@@ -152,10 +155,9 @@ namespace SCJoyServer
           }
         }
         lblVJoy.Text = $"loaded   - {cbxJoystick.Items.Count:#} device(s)";
-        tvJoy = null;
       }
       // Kbd DLL
-      if ( SCdxKeyboard.isDllLoaded ) {
+      if ( vjAction.vjActionHandler.IsKbdDllLoaded ) {
         lblSCdx.Text = "loaded";
         cbxKBon.Enabled = true;
         cbxKBon.Checked = AppSettings.Instance.UseKeyboard;
@@ -175,6 +177,17 @@ namespace SCJoyServer
     {
       this.Invoke( myDelExecPing );
     }
+    private void Kbd_Ping( object sender, vjAction.vjActionEventArgs e )
+    {
+      this.Invoke( myDelExecPing );
+    }
+
+    private void vJoy_Ping( object sender, vjAction.vjActionEventArgs e )
+    {
+      this.Invoke( myDelExecPing );
+    }
+
+
     private void ExecPingMethod()
     {
       lblSignal.Text = ( ++m_msgReceived ).ToString( );
@@ -186,6 +199,8 @@ namespace SCJoyServer
     {
       this.Invoke( myDelExecWCliPing );
     }
+
+
     private void ExecWCliPingMethod()
     {
       lblUpSignal.Text = ( ++m_msgSent ).ToString( );

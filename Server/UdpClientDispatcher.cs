@@ -21,16 +21,18 @@ namespace SCJoyServer.Server
     private Thread m_clientTask = null;
     private IPAddress m_ipAddress = null;
     private int m_port = 0;
+    private int m_jsIndex = 0;
 
     /// <summary>
     /// cTor: creates a listener task that dispatches processing threads
     /// </summary>
     /// <param name="address">The IP address to listen</param>
     /// <param name="port">The port number to listen</param>
-    public UdpClientDispatcher( IPAddress address, int port )
+    public UdpClientDispatcher( IPAddress address, int port, int jsIndex )
     {
       m_ipAddress = address;
       m_port = port;
+      m_jsIndex = jsIndex;
 
       m_clientTask = new Thread( new ThreadStart( this.StartReceiving ) );
       m_clientTask.Start( );
@@ -89,11 +91,11 @@ namespace SCJoyServer.Server
 
             // incoming data needs to be processed.
             // create a dedicated server instance and put it into the process queue of the ClientService
-            connectionPool.Enqueue( new VJoyServer( data, ClientNbr ) );
+            connectionPool.Enqueue( new VJoyServer( data, ClientNbr, m_jsIndex ) );
           }
           else
             break;
-        }
+        }//while
 
       }
       catch ( Exception e ) {

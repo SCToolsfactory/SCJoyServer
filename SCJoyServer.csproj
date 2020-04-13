@@ -25,8 +25,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>31</ApplicationRevision>
-    <ApplicationVersion>2.8.0.%2a</ApplicationVersion>
+    <ApplicationRevision>32</ApplicationRevision>
+    <ApplicationVersion>2.9.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -71,6 +71,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="vjAction">
+      <HintPath>ExtLibraries\vjAction.dll</HintPath>
+    </Reference>
     <Reference Include="vjMapper">
       <HintPath>ExtLibraries\vjMapper.dll</HintPath>
     </Reference>
@@ -101,13 +104,8 @@
     <Compile Include="Server\XChar.cs" />
     <Compile Include="Uploader\WebUploader.cs" />
     <Compile Include="Uploader\WebUploaderStatus.cs" />
-    <Compile Include="VJoy\Json.cs" />
-    <Compile Include="VJoy\VJoyCmdParser.cs" />
-    <Compile Include="VJoy\VJoyHandler.cs" />
-    <Compile Include="VJoy\VJoyCommand.cs" />
     <Compile Include="Server\VJoyServer.cs" />
     <Compile Include="Server\VJoyServerStatus.cs" />
-    <Compile Include="VJoy\vJoystick.cs" />
     <EmbeddedResource Include="AApp\DebugForm.resx">
       <DependentUpon>DebugForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -134,7 +132,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="SupportBinaries\SupportingDLLs.zip" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Cassini_Logo_Icon.ico" />

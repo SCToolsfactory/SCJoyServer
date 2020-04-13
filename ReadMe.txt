@@ -1,11 +1,12 @@
-SC vJoy Server V 2.8 - Build 31 BETA
-(c) Cassini - 29-Mar-2020
+SC vJoy Server V 2.9 - Build 32 BETA
+(c) Cassini - 13-Apr-2020
 
 Contains 6 files:
 
-SCJoyServer.exe              The program (V2.7-B30)
+SCJoyServer.exe              The program (V2.9-B32)
 
 - All libraries below MUST be in the same folder as the Exe file
+vjAction.dll				 Mapping library for Json Commands
 vjMapper.dll				 Mapping library for Json Commands
 dxKbdInterfaceWrap.dll	     Wrapper for the native DLL
   x64\SCdxKeyboard.dll       Native dll for Keyboard (v2.00)
@@ -27,6 +28,10 @@ Scanned for viruses before packing...
 cassini@burri-web.org
 
 Changelog:
+V 2.9-B32
+- update The primary port server accepts any joystick device no, if provided, port+N still force the index to be 1+N (2...)
+         i.e. if the JNo is used in the command all traffic can be sent to the primary (first) port.
+- refact use common libraries (new dlls to include)
 V 2.8-B31
 - refact use common libraries (new dlls to include)
 V 2.7-B30

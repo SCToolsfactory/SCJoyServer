@@ -2,7 +2,6 @@
 using System.Net;
 using System.Diagnostics;
 
-using SCJoyServer.VJoy;
 using System.Net.NetworkInformation;
 
 namespace SCJoyServer.Server
@@ -124,7 +123,7 @@ namespace SCJoyServer.Server
         VJoyServerStatus.Instance.Debug( $"\nno valid Joystick index supplied - will not use vJoy\n" );
       }
       else {
-        if ( !VJoyHandler.Instance.Connect( jsIndex ) ) {
+        if ( !vjAction.vjActionHandler.ConnectJoystick( jsIndex ) ) {
           VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Error );
           VJoyServerStatus.Instance.Debug( $"\nERROR - cannot start the Joystick Handler ...\n" );
           return; // ERROR - cannot connect
@@ -132,7 +131,7 @@ namespace SCJoyServer.Server
       }
 
       // load and run the dispatcher
-      m_vjDispatcherUdp = new UdpClientDispatcher( lAddr, port );
+      m_vjDispatcherUdp = new UdpClientDispatcher( lAddr, port, jsIndex );
       if ( m_vjDispatcherUdp.IsAlive ) {
         UdpRunning = true;
         VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Running ); // maintain status information 
@@ -172,7 +171,7 @@ namespace SCJoyServer.Server
         VJoyServerStatus.Instance.Debug( $"\nno valid Joystick index supplied - will not use vJoy\n" );
       }
       else {
-        if ( !VJoyHandler.Instance.Connect( jsIndex ) ) {
+        if ( !vjAction.vjActionHandler.ConnectJoystick( jsIndex ) ) {
           VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Error );
           VJoyServerStatus.Instance.Debug( $"\nERROR - cannot start the Joystick Handler ...\n" );
           return; // ERROR - cannot connect
@@ -180,7 +179,7 @@ namespace SCJoyServer.Server
       }
 
       // load and run the dispatcher
-      m_vjDispatcherTcp = new TcpClientDispatcher( lAddr, port );
+      m_vjDispatcherTcp = new TcpClientDispatcher( lAddr, port, jsIndex );
       if ( m_vjDispatcherTcp.IsAlive ) {
         TcpRunning = true;
         VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Running ); // maintain status information 
@@ -214,7 +213,7 @@ namespace SCJoyServer.Server
       }
       // should return once the dispatcher and it's threads are down.
 
-      VJoyHandler.Instance.Disconnect( ); // shut the Joystick handler
+      vjAction.vjActionHandler.DisconnectJoysticks( ); // shut the Joystick handler
 
       VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Idle ); // maintain status information 
     }
