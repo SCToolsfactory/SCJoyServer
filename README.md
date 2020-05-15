@@ -99,6 +99,3 @@ Just within the application Exe folder:
 *   x64\vJoyInterface.dll      (from vJoy218SDK-291116 - 64bit)
 *   x86\vJoyInterface.dll      (from vJoy218SDK-291116 - 32bit)
 
-
-
-
