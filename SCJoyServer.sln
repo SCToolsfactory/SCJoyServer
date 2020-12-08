@@ -14,8 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{21B35315-9E5
 		ReadMe.txt = ReadMe.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UT_VJServer3", "UT_VJServer3\UT_VJServer3.csproj", "{9AE8420D-7DDF-4786-A599-0C196706C4C8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,10 +28,6 @@ Global
 		{AABB094D-C9D8-4859-9333-00B7E0E6AC76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AABB094D-C9D8-4859-9333-00B7E0E6AC76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AABB094D-C9D8-4859-9333-00B7E0E6AC76}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9AE8420D-7DDF-4786-A599-0C196706C4C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9AE8420D-7DDF-4786-A599-0C196706C4C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9AE8420D-7DDF-4786-A599-0C196706C4C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9AE8420D-7DDF-4786-A599-0C196706C4C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

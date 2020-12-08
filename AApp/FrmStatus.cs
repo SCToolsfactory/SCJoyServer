@@ -27,10 +27,10 @@ namespace SCJoyServer
     private DebugForm DBF = null;
 
     // asynch ping support
-    private delegate void ExecPing();
+    private delegate void ExecPing( );
     private ExecPing myDelExecPing;
 
-    private delegate void ExecWCliPing();
+    private delegate void ExecWCliPing( );
     private ExecWCliPing myDelExecWCliPing;
 
     private string IconStringRunning { get => $"{AppName}\nService active"; }
@@ -56,7 +56,7 @@ namespace SCJoyServer
     /// <summary>
     /// cTor
     /// </summary>
-    public FrmStatus()
+    public FrmStatus( )
     {
       InitializeComponent( );
 
@@ -129,7 +129,7 @@ namespace SCJoyServer
 
       txUpDir.Text = Environment.CurrentDirectory;
       s = AppSettings.Instance.UploadDir;
-      if ( !string.IsNullOrEmpty( s ) && Directory.Exists(s) ) {
+      if ( !string.IsNullOrEmpty( s ) && Directory.Exists( s ) ) {
         txUpDir.Text = s;
       }
       fswUploader.Path = txUpDir.Text;
@@ -147,7 +147,7 @@ namespace SCJoyServer
           cbxJoystick.SelectedIndex = 0;
           // select the one in AppSettings
           string[] js = AppSettings.Instance.JoystickUsed.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries); // a list
-          for (int i=0; i<js.Length; i++ ) {
+          for ( int i = 0; i < js.Length; i++ ) {
             var idx = cbxJoystick.Items.IndexOf( js[i] );
             if ( idx >= 0 ) {
               cbxJoystick.SetItemChecked( idx, true );
@@ -188,7 +188,7 @@ namespace SCJoyServer
     }
 
 
-    private void ExecPingMethod()
+    private void ExecPingMethod( )
     {
       lblSignal.Text = ( ++m_msgReceived ).ToString( );
     }
@@ -201,7 +201,7 @@ namespace SCJoyServer
     }
 
 
-    private void ExecWCliPingMethod()
+    private void ExecWCliPingMethod( )
     {
       lblUpSignal.Text = ( ++m_msgSent ).ToString( );
     }
@@ -287,18 +287,35 @@ namespace SCJoyServer
         lbxClients.Items.Clear( );
         int jsIndex = 0;
         int sport = port; // first one
-        foreach (var jsx in cbxJoystick.CheckedItems ) {
-          string[] js = ( jsx as string ).Split( new char[] { '#' } );
-          if ( js.Length > 1 ) {
-            jsIndex = int.Parse( js[1] );
+        if ( cbxJoystick.CheckedItems.Count > 0 ) {
+          bool primary=true; // first round
+          // checked joysticks
+          foreach ( var jsx in cbxJoystick.CheckedItems ) {
+            string[] js = ( jsx as string ).Split( new char[] { '#' } );
+            if ( js.Length > 1 ) {
+              jsIndex = int.Parse( js[1] );
 
-            if ( cbxUdp.Checked ) {
-              SVR.StartUdpServer( txLocIP.Text, sport, jsIndex, "" );
+              if ( !primary )
+                sport = port + ( jsIndex - 1 ); // NON primary ports use Port = BasePort + JsIndex-1 i.e. Js3 goes to Base+2 (if not primary)
+
+              if ( cbxUdp.Checked ) {
+                SVR.StartUdpServer( txLocIP.Text, sport, jsIndex, primary );
+              }
+              if ( cbxTcp.Checked ) {
+                SVR.StartTcpServer( txLocIP.Text, sport, jsIndex, primary );
+              }
+
+              primary = false;
             }
-            if ( cbxTcp.Checked ) {
-              SVR.StartTcpServer( txLocIP.Text, sport, jsIndex, "" );
-            }
-            sport++; // next port
+          }
+        }
+        else {
+          //Kbd Only 
+          if ( cbxUdp.Checked ) {
+            SVR.StartUdpServer( txLocIP.Text, port, -1, true );
+          }
+          if ( cbxTcp.Checked ) {
+            SVR.StartTcpServer( txLocIP.Text, port, -1, true );
           }
         }
 
@@ -320,7 +337,7 @@ namespace SCJoyServer
         }
         else {
           pnlState.BackgroundImage = IL.Images["error"];
-          ICON.Text =IconStringIdle;
+          ICON.Text = IconStringIdle;
         }
       }
 
@@ -354,7 +371,7 @@ namespace SCJoyServer
         }
 
         if ( Directory.Exists( txUpDir.Text ) ) {
-          UPLOADER.StartService(  $"{txRemIP.Text}:{port:#0}");
+          UPLOADER.StartService( $"{txRemIP.Text}:{port:#0}" );
         }
         if ( UPLOADER.WebClientRunning ) {
           btUpStartStop.Text = "Stop Client";

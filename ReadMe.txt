@@ -1,9 +1,9 @@
-SC vJoy Server V 2.9 - Build 32 BETA
-(c) Cassini - 13-Apr-2020
+SC vJoy Server V 2.10 - Build 33 BETA
+(c) Cassini - 08-Dec-2020
 
 Contains 6 files:
 
-SCJoyServer.exe              The program (V2.9-B32)
+SCJoyServer.exe              The program (V2.10-B33)
 
 - All libraries below MUST be in the same folder as the Exe file
 vjAction.dll				 Mapping library for Json Commands
@@ -28,6 +28,9 @@ Scanned for viruses before packing...
 cassini@burri-web.org
 
 Changelog:
+V 2.10-B33
+- update Can connect to keyboard only i.e. no joystick checked (vJoy may not be used)
+- fixed  Joystick alloc does no longer uses Joystick #1 as primary but the first checked one (was an issue in case #1 was not checked)
 V 2.9-B32
 - update The primary port server accepts any joystick device no, if provided, port+N still force the index to be 1+N (2...)
          i.e. if the JNo is used in the command all traffic can be sent to the primary (first) port.

@@ -22,17 +22,21 @@ namespace SCJoyServer.Server
     private IPAddress m_ipAddress = null;
     private int m_port = 0;
     private int m_jsIndex = 0;
+    private bool m_primaryPort = false;
 
     /// <summary>
     /// cTor: creates a listener task that dispatches processing threads
     /// </summary>
     /// <param name="address">The IP address to listen</param>
     /// <param name="port">The port number to listen</param>
-    public UdpClientDispatcher( IPAddress address, int port, int jsIndex )
+    /// <param name="jsIndex">Joystick Index or -1 when no joystick should be connected</param>
+    /// <param name="primaryPort">True if the port used is the primary one</param>
+    public UdpClientDispatcher( IPAddress address, int port, int jsIndex, bool primaryPort )
     {
       m_ipAddress = address;
       m_port = port;
       m_jsIndex = jsIndex;
+      m_primaryPort = primaryPort;
 
       m_clientTask = new Thread( new ThreadStart( this.StartReceiving ) );
       m_clientTask.Start( );
@@ -91,7 +95,7 @@ namespace SCJoyServer.Server
 
             // incoming data needs to be processed.
             // create a dedicated server instance and put it into the process queue of the ClientService
-            connectionPool.Enqueue( new VJoyServer( data, ClientNbr, m_jsIndex ) );
+            connectionPool.Enqueue( new VJoyServer( data, ClientNbr, m_jsIndex, m_primaryPort ) );
           }
           else
             break;

@@ -1,4 +1,4 @@
-# SCJoyServer V 2.9.0.31
+# SCJoyServer V 2.10.0.33
 
 Provides an UDP and TCP Server that actuates vJoy virtual Joysticks and supplies keystrokes to the active window  
 
@@ -11,14 +11,17 @@ https://github.com/SCToolsfactory/SC_Toolbox
 
 # SC Virtual Joystick Server  (.Net 4.7.2)
 
-The command is Json syntax, supports also keystrokes sent to the active window.
+The command is Json syntax, supports also keystrokes sent to the **active** window.  
+--> The keystrokes sent via server are typed in the window that has the keyboard input focus.  
+
 
 Note:  
 You have to install the vJoy (V 2.1) driver.  
 The driver is not available here but use this link.  
 http://vjoystick.sourceforge.net/site/index.php/download-a-install/download     
 
-Also note there is no security built in yet, i.e. if the server listens on the LAN port one may type remotely into your active window.. - be warned or use a firewalled intranet or for in machine use only use the loopback address (127.0.0.1)
+Also note there is no security built in, i.e. if the server listens on the LAN port one may type remotely into your active window.. - 
+take care or use a firewalled intranet or for in machine use only use the loopback address (127.0.0.1)
 
 Open e.g. Putty and then connect to the server (default port is 34123 but you may change it)  
 
@@ -68,13 +71,19 @@ Send commands like
 Supports UDP and TCP protocol. For TCP there are up to 8 simultaneous clients served.  
 The primary port accepts commands directed to any vJoy (JNo) device enabled.
 
-Legacy support: (try to include the JNo as soon as possible..)  
-Supports multiple UDP and TCP servers (one per vJoystick for devices >1).  
-The Network port increments with each active Joystick selected. Don't leave gaps - else the indexing is messed up..  
-If JNo is not provided it defaults to 1. To send such command to JNo N  send commands to port+(N-1)  
+#### Legacy support when no JNo is provided: 
 
-It supports also file upload from a monitored directory to a WebServer with http POST.  
-The file is expected to be of type and extension .json  
+**Please try to include the JNo as soon as possible then send everything to the BasePort.**    
+If the JNo is not provided it defaults to JNo=1 if sent to the BasePort!  
+Supports multiple UDP and TCP servers (one per vJoystick for #devices >1).  
+The Network port is set to BasePort + Joystick#-1 with each active Joystick selected.  
+To send commands without embedded JNo to a specific server port use BasePort+(JNo-1) as target port.
+I.e. with BasePort = 34123 to send to Joystick 3 use 34123+(3-1) = 34125 (don't forget to have Js3 checked)
+
+### File upload service
+
+The program supports also file upload from a monitored directory to a WebServer with http POST.  
+The file is expected to be of type and extension ``.json``  
 The WebServer must have an upload route to /api/fileupload enabled and either e.g. a default PHP script or otherwise able to receive the upload POST request else you may need to change it in the WebUploader code.  
   
 You may map the Virtual Joystick like any real one into SC by using e.g. SCJMapper-V2  
@@ -86,6 +95,11 @@ You may map the Virtual Joystick like any real one into SC by using e.g. SCJMapp
 * A MFD display utility  
 * A Switch panel utility that does not provide native Joystick/Keyboard input  
 * Your idea ....
+
+Note: if a vJoy device is captured from another application the server startup may fail with an error
+as it cannot connect the vJoy device. In such case uncheck the device used by the other application and try again.
+Add one more vJoy device and use this one or uncheck all and use only the keyboard service.
+
 
 In order to use the server one has to add the library DLLs 
 

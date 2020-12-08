@@ -100,8 +100,9 @@ namespace SCJoyServer.Server
     /// </summary>
     /// <param name="sIpAddress">The local IP to bind to</param>
     /// <param name="port">The local port to bind to</param>
-    /// <param name="setupFilePath">A setupfile (not yet used)</param>
-    public void StartUdpServer( string sIpAddress, int port, int jsIndex, string setupFilePath )
+    /// <param name="jsIndex">Joystick Index or -1 when no joystick should be connected</param>
+    /// <param name="primaryPort">True if the port used is the primary one</param>
+    public void StartUdpServer( string sIpAddress, int port, int jsIndex, bool primaryPort )
     {
       if ( m_vjDispatcherUdp != null ) if ( m_vjDispatcherUdp.IsAlive ) return; // already running
 
@@ -131,7 +132,7 @@ namespace SCJoyServer.Server
       }
 
       // load and run the dispatcher
-      m_vjDispatcherUdp = new UdpClientDispatcher( lAddr, port, jsIndex );
+      m_vjDispatcherUdp = new UdpClientDispatcher( lAddr, port, jsIndex, primaryPort );
       if ( m_vjDispatcherUdp.IsAlive ) {
         UdpRunning = true;
         VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Running ); // maintain status information 
@@ -148,8 +149,9 @@ namespace SCJoyServer.Server
     /// </summary>
     /// <param name="sIpAddress">The local IP to bind to</param>
     /// <param name="port">The local port to bind to</param>
-    /// <param name="setupFilePath">A setupfile (not yet used)</param>
-    public void StartTcpServer( string sIpAddress, int port, int jsIndex, string setupFilePath )
+    /// <param name="jsIndex">Joystick Index or -1 when no joystick should be connected</param>
+    /// <param name="primaryPort">True if the port used is the primary one</param>
+    public void StartTcpServer( string sIpAddress, int port, int jsIndex, bool primaryPort )
     {
       if ( m_vjDispatcherTcp != null ) if ( m_vjDispatcherTcp.IsAlive ) return; // already running
 
@@ -179,7 +181,7 @@ namespace SCJoyServer.Server
       }
 
       // load and run the dispatcher
-      m_vjDispatcherTcp = new TcpClientDispatcher( lAddr, port, jsIndex );
+      m_vjDispatcherTcp = new TcpClientDispatcher( lAddr, port, jsIndex, primaryPort );
       if ( m_vjDispatcherTcp.IsAlive ) {
         TcpRunning = true;
         VJoyServerStatus.Instance.SetSvrStatus( VJoyServerStatus.SvrStatus.Running ); // maintain status information 

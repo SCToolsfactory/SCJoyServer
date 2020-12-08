@@ -34,13 +34,15 @@ namespace SCJoyServer.Server
       }
     }
 
+
     /// <summary>
     /// Starts an UDP Service
     /// </summary>
     /// <param name="sIpAddress">The local IP to bind to</param>
     /// <param name="port">The local port to bind to</param>
-    /// <param name="setupFilePath">A setupfile (not yet used)</param>
-    public void StartUdpServer( string sIpAddress, int port, int jsIndex, string setupFilePath )
+    /// <param name="jsIndex">Joystick Index or -1 when no joystick should be connected</param>
+    /// <param name="primaryPort">True if the port used is the primary one</param>
+    public void StartUdpServer( string sIpAddress, int port, int jsIndex, bool primaryPort )
     {
       ServerManager sm = null;
       if ( m_serverFarm.ContainsKey( port ) ) {
@@ -51,7 +53,7 @@ namespace SCJoyServer.Server
         m_serverFarm.Add( port, sm );
       }
       // start it
-      sm.StartUdpServer( sIpAddress, port, jsIndex, setupFilePath );
+      sm.StartUdpServer( sIpAddress, port, jsIndex, primaryPort );
     }
 
 
@@ -60,8 +62,9 @@ namespace SCJoyServer.Server
     /// </summary>
     /// <param name="sIpAddress">The local IP to bind to</param>
     /// <param name="port">The local port to bind to</param>
-    /// <param name="setupFilePath">A setupfile (not yet used)</param>
-    public void StartTcpServer( string sIpAddress, int port, int jsIndex, string setupFilePath )
+    /// <param name="jsIndex">Joystick Index or -1 when no joystick should be connected</param>
+    /// <param name="primaryPort">True if the port used is the primary one</param>
+    public void StartTcpServer( string sIpAddress, int port, int jsIndex, bool primaryPort )
     {
       ServerManager sm = null;
       if ( m_serverFarm.ContainsKey( port ) ) {
@@ -72,7 +75,7 @@ namespace SCJoyServer.Server
         m_serverFarm.Add( port, sm );
       }
       // start it
-      sm.StartTcpServer( sIpAddress, port, jsIndex, setupFilePath );
+      sm.StartTcpServer( sIpAddress, port, jsIndex, primaryPort );
     }
 
 

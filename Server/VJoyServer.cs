@@ -25,45 +25,9 @@ namespace SCJoyServer.Server
     private string m_clientIP = "";
     private int m_clientNumber = 0;
     private int m_jsIndex = 0;
+    private bool m_primaryPort = false;
 
     private NetworkStream m_networkStream;
-
-    /// <summary>
-    /// cTor: Setup the client processing UDP
-    /// </summary>
-    public VJoyServer( byte[] data, int clientNumber, int jsIndex )
-    {
-      this.m_clientSocket = null;
-      m_clientIP = "";
-      m_clientNumber = clientNumber;
-      m_jsIndex = jsIndex;
-
-      m_networkStream = null;
-      m_byteBuffer = new byte[data.Length];
-      data.CopyTo( m_byteBuffer, 0 );
-      Alive = true;
-      VJoyServerStatus.Instance.Debug( $"VJoyServer.ctor UDP: Client[{m_clientNumber}] connected: {m_clientIP}\n" );
-    }
-
-    /// <summary>
-    /// cTor: Setup the client processing and wait for Process() to run  TCP
-    /// </summary>
-    /// <param name="ClientSocket">An incomming client connection</param>
-    public VJoyServer( TcpClient ClientSocket, int clientNumber, int jsIndex )
-    {
-      this.m_clientSocket = ClientSocket;
-      m_clientIP = ( (IPEndPoint)m_clientSocket.Client.RemoteEndPoint ).Address.ToString( );
-      m_clientNumber = clientNumber;
-      this.m_clientSocket.ReceiveTimeout = 5000; // timeout to get the clients disconnected if the server wants to shut down
-      m_jsIndex = jsIndex;
-
-      m_networkStream = ClientSocket.GetStream( );
-      m_byteBuffer = new byte[ClientSocket.ReceiveBufferSize];
-      Alive = true;
-
-      VJoyServerStatus.Instance.SetClientsStatus( $"TCP Client #{m_clientNumber} connected: {m_clientIP}" );
-      VJoyServerStatus.Instance.Debug( $"VJoyServer.ctor TCP: Client[{m_clientNumber}] connected: {m_clientIP}\n" );
-    }
 
     /// <summary>
     /// Close this client connection and let the thread die
@@ -94,10 +58,47 @@ namespace SCJoyServer.Server
       VJoyServerStatus.Instance.Debug( $"VJoyServer.thread: Cl[{m_clientNumber}]: {msg}" );
     }
 
-    #region Thread routine
+
+    /// <summary>
+    /// UDP/TCP common handling method
+    /// </summary>
+    /// <param name="vjCmd">A VALID VJCommand</param>
+    private void HandleCommand( VJCommand vjCmd )
+    {
+      // The primary port server uses the command embedded JsIndex to target the correct joystick. (ACTUAL Mode)
+
+      // All other TCP/UDP ports are forcing the joystick number to be used  (LEGACY Mode)
+      // i.e. a command arriving at the second port uses the second joystick checked (no matter what number it is)
+      // to follow the index of the server instance (for compatibility reason when no or the default jsNo is in the command)
+      if ( !m_primaryPort )
+        vjCmd.CtrlJNo = m_jsIndex; // all but the primary port will use the designated JsIndex
+
+      vjActionHandler.HandleMessage( vjCmd ); // dispatch the command for execution
+    }
 
 
     #region UDP telegram
+
+    /// <summary>
+    /// cTor: Setup the client processing UDP
+    /// </summary>
+    public VJoyServer( byte[] data, int clientNumber, int jsIndex, bool primaryPort )
+    {
+      this.m_clientSocket = null;
+      m_clientIP = "";
+      m_clientNumber = clientNumber;
+      m_jsIndex = jsIndex;
+      m_primaryPort = primaryPort;
+
+      m_networkStream = null;
+      m_byteBuffer = new byte[data.Length];
+      data.CopyTo( m_byteBuffer, 0 );
+      Alive = true;
+      VJoyServerStatus.Instance.Debug( $"VJoyServer.ctor UDP: Client[{m_clientNumber}] connected: {m_clientIP}\n" );
+    }
+
+
+    #region Thread routine UDP
 
     /// <summary>
     /// Try to get a valid message
@@ -112,7 +113,7 @@ namespace SCJoyServer.Server
     /// </remarks>
     /// <param name="stream">The network stream</param>
     /// <returns>A message, either valid or invalid</returns>
-    private VJCommand ProcessMessage()
+    private VJCommand ProcessMessage( )
     {
       string recvBuffer = m_RecvBuffer; // load from last run
 
@@ -159,17 +160,14 @@ namespace SCJoyServer.Server
     /// Task Routine: Processes the clients requests UDP
     /// This just processes the data at hand and returns to the clientdispatcher
     /// </summary>
-    public void ProcessData()
+    public void ProcessData( )
     {
       try {
         // read from client and handle telegrams - it will care about invalid ones
         var vjCmd = ProcessMessage( );
         while ( vjCmd.IsValid ) {
-          // except for the primary port server, all other UDP ports are forcing the joystick number
-          // to follow the index 2.. (for compatibility reason when no or the default jsNo is in the command)
-          if ( m_jsIndex > 1 ) vjCmd.CtrlJNo = m_jsIndex;
-          vjActionHandler.HandleMessage( vjCmd );
-          vjCmd = ProcessMessage( ); // get next (if there are any..
+          HandleCommand( vjCmd );
+          vjCmd = ProcessMessage( ); // get next - if there are any..
         }
       }
       catch ( Exception e ) {
@@ -179,9 +177,34 @@ namespace SCJoyServer.Server
     }  // ProcessData()
 
     #endregion
+    #endregion
 
 
     #region TCP stream
+
+    /// <summary>
+    /// cTor: Setup the client processing and wait for Process() to run  TCP
+    /// </summary>
+    /// <param name="ClientSocket">An incomming client connection</param>
+    public VJoyServer( TcpClient ClientSocket, int clientNumber, int jsIndex, bool primaryPort )
+    {
+      this.m_clientSocket = ClientSocket;
+      m_clientIP = ( (IPEndPoint)m_clientSocket.Client.RemoteEndPoint ).Address.ToString( );
+      m_clientNumber = clientNumber;
+      this.m_clientSocket.ReceiveTimeout = 5000; // timeout to get the clients disconnected if the server wants to shut down
+      m_jsIndex = jsIndex;
+      m_primaryPort = primaryPort;
+
+      m_networkStream = ClientSocket.GetStream( );
+      m_byteBuffer = new byte[ClientSocket.ReceiveBufferSize];
+      Alive = true;
+
+      VJoyServerStatus.Instance.SetClientsStatus( $"TCP Client #{m_clientNumber} connected: {m_clientIP}" );
+      VJoyServerStatus.Instance.Debug( $"VJoyServer.ctor TCP: Client[{m_clientNumber}] connected: {m_clientIP}\n" );
+    }
+
+
+    #region Thread routine TCP
 
     /// <summary>
     /// Try to get a valid message
@@ -250,17 +273,14 @@ namespace SCJoyServer.Server
     /// Task Routine: Processes the clients requests (TCP stream)
     /// This just makes one receive round and returns to the clientdispatcher
     /// </summary>
-    public void ProcessNetworkStream()
+    public void ProcessNetworkStream( )
     {
       try {
         // read from client and handle a telegram - it will care about invalid ones
 
         var vjCmd = RecvMessage( m_networkStream );
         if ( vjCmd.IsValid ) {
-          // except for the primary port server, all other TCP ports are forcing the joystick number
-          // to follow the index 2.. (for compatibility reason when no or the default jsNo is in the command)
-          if ( m_jsIndex > 1 ) vjCmd.CtrlJNo = m_jsIndex;
-          vjActionHandler.HandleMessage( vjCmd );
+          HandleCommand( vjCmd );
         }
       }
       catch ( SocketException e ) {
@@ -272,8 +292,8 @@ namespace SCJoyServer.Server
     }  // Process()
 
     #endregion
-
     #endregion
+
 
   }
 }
